@@ -1,0 +1,294 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="state state-loading">加载中…</view>
+
+  <view wx:elif="{{loadError}}" class="state state-error">{{loadError}}</view>
+
+  <block wx:else>
+    <view class="card project-card">
+      <block wx:if="{{!editing}}">
+        <view class="project-title">{{project.name}}</view>
+        <view class="row" wx:if="{{project.street}}">
+          <text class="label">街道</text>
+          <text class="value">{{project.street}}</text>
+        </view>
+        <view class="row">
+          <text class="label">地址</text>
+          <text class="value">{{project.address || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="label">联系人</text>
+          <text class="value">{{project.contact || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="label">电话</text>
+          <text class="value mono">{{project.phone || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="label">类别</text>
+          <text class="value">{{project.category || '—'}}</text>
+        </view>
+        <block wx:if="{{isWenti}}">
+          <view class="row" wx:if="{{project.report_code}}">
+            <text class="label">报告编号</text>
+            <text class="value mono">{{project.report_code}}</text>
+          </view>
+          <view class="row" wx:if="{{project.area}}">
+            <text class="label">经营面积</text>
+            <text class="value">{{project.area}}㎡</text>
+          </view>
+          <view class="row" wx:if="{{project.floor_info}}">
+            <text class="label">所在楼层</text>
+            <text class="value">{{project.floor_info}}</text>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="divider"></view>
+          <view class="row">
+            <text class="label">建设单位</text>
+            <text class="value">{{project.build_unit || '—'}}</text>
+          </view>
+          <view class="row">
+            <text class="label">施工单位</text>
+            <text class="value">{{project.construct_unit || '—'}}</text>
+          </view>
+          <view class="row">
+            <text class="label">监理单位</text>
+            <text class="value">{{project.supervise_unit || '—'}}</text>
+          </view>
+        </block>
+        <view class="row" wx:if="{{isWenti && project.inspectors}}">
+          <text class="label">排查人员</text>
+          <text class="value">{{project.inspectors}}</text>
+        </view>
+        <view class="row" wx:if="{{!isWenti && project.inspectors}}">
+          <text class="label">核销人员</text>
+          <text class="value">{{project.inspectors}}</text>
+        </view>
+        <view class="row muted" wx:if="{{project.check_date}}">
+          <text class="label">{{isWenti ? '检查日期' : '核销日期'}}</text>
+          <text class="value">{{project.check_date}}</text>
+        </view>
+        <button class="btn-edit" size="mini" bindtap="onStartEdit">编辑信息</button>
+      </block>
+      <block wx:else>
+        <view class="edit-row">
+          <text class="edit-label">项目名称</text>
+          <view class="input-wrap">
+            <textarea class="edit-textarea" value="{{editForm.name}}" data-field="name" bindinput="onEditInput" auto-height maxlength="200" />
+          </view>
+        </view>
+        <view class="edit-row">
+          <text class="edit-label">街道</text>
+          <view class="input-wrap">
+            <input class="edit-input" value="{{editForm.street}}" data-field="street" bindinput="onEditInput" />
+          </view>
+        </view>
+        <view class="edit-row">
+          <text class="edit-label">地址</text>
+          <view class="input-wrap">
+            <textarea class="edit-textarea" value="{{editForm.address}}" data-field="address" bindinput="onEditInput" auto-height maxlength="500" />
+          </view>
+        </view>
+        <view class="edit-row">
+          <text class="edit-label">联系人</text>
+          <view class="input-wrap">
+            <input class="edit-input" value="{{editForm.contact}}" data-field="contact" bindinput="onEditInput" />
+          </view>
+        </view>
+        <view class="edit-row">
+          <text class="edit-label">电话</text>
+          <view class="input-wrap">
+            <input class="edit-input" value="{{editForm.phone}}" data-field="phone" bindinput="onEditInput" type="number" />
+          </view>
+        </view>
+        <view class="edit-row">
+          <text class="edit-label">类别</text>
+          <view class="input-wrap">
+            <input class="edit-input" value="{{editForm.category}}" data-field="category" bindinput="onEditInput" />
+          </view>
+        </view>
+        <block wx:if="{{isWenti}}">
+          <view class="edit-row">
+            <text class="edit-label">排查人员</text>
+            <view class="input-wrap">
+              <textarea class="edit-textarea" value="{{editForm.inspectors}}" data-field="inspectors" bindinput="onEditInput" placeholder="多人用逗号分隔" auto-height maxlength="200" />
+            </view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">检查日期</text>
+            <view class="input-wrap">
+              <input class="edit-input" value="{{editForm.check_date}}" data-field="check_date" bindinput="onEditInput" placeholder="如 2025.6.10" />
+            </view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">经营面积</text>
+            <view class="input-wrap">
+              <input class="edit-input" value="{{editForm.area}}" data-field="area" bindinput="onEditInput" placeholder="㎡" />
+            </view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">所在楼层</text>
+            <view class="input-wrap">
+              <input class="edit-input" value="{{editForm.floor_info}}" data-field="floor_info" bindinput="onEditInput" />
+            </view>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="edit-row">
+            <text class="edit-label">核销人员</text>
+            <view class="input-wrap picker-wrap">
+              <picker mode="selector" range="{{inspectorNames}}" value="{{inspectorIndex}}" bindchange="onInspectorChange">
+                <view class="picker-value {{editForm.inspectors ? '' : 'placeholder'}}">
+                  {{editForm.inspectors || '请选择核销人员'}}
+                </view>
+              </picker>
+              <view class="btn-add-member" bindtap="onAddInspector">+ 新增</view>
+            </view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">核销日期</text>
+            <view class="input-wrap">
+              <input class="edit-input" value="{{editForm.check_date}}" data-field="check_date" bindinput="onEditInput" placeholder="如 2026年04月11日" />
+            </view>
+          </view>
+        </block>
+        <view class="edit-actions">
+          <button class="btn-cancel" size="mini" bindtap="onCancelEdit">取消</button>
+          <button class="btn-save" size="mini" bindtap="onSaveEdit">保存</button>
+        </view>
+      </block>
+    </view>
+
+    <view class="section-head">
+      <text class="section-title">现场照片</text>
+    </view>
+    <view class="card scene-card">
+      <view class="scene-grid">
+        <view class="scene-slot" bindtap="onOpenCamera" data-type="facade">
+          <view class="scene-inner">
+            <image wx:if="{{facadeUploaded && facadeSrc}}" class="scene-thumb" src="{{facadeSrc}}" mode="aspectFill" />
+            <view wx:else class="scene-add">+</view>
+          </view>
+          <text class="scene-caption">{{isWenti ? '场所照片' : '企业门面'}}</text>
+        </view>
+        <block wx:if="{{isWenti}}">
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="license">
+            <view class="scene-inner">
+              <image wx:if="{{licenseUploaded && licenseSrc}}" class="scene-thumb" src="{{licenseSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">营业执照</text>
+          </view>
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="permit">
+            <view class="scene-inner scene-inner-portrait">
+              <image wx:if="{{permitUploaded && permitSrc}}" class="scene-thumb" src="{{permitSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">经营许可证</text>
+          </view>
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="record_sheet">
+            <view class="scene-inner scene-inner-portrait">
+              <image wx:if="{{recordSheetUploaded && recordSheetSrc}}" class="scene-thumb" src="{{recordSheetSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">记录表(手写)</text>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="card">
+            <view class="scene-inner">
+              <image wx:if="{{cardUploaded && cardSrc}}" class="scene-thumb" src="{{cardSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">廉政监督卡</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="section-head">
+      <text class="section-title">隐患列表</text>
+      <text class="section-count" wx:if="{{hazards.length}}">共 {{hazards.length}} 条</text>
+      <view class="btn-add-hazard" bindtap="onAddHazard">+ 添加隐患</view>
+    </view>
+
+    <view wx:if="{{!hazards.length}}" class="card empty-card">
+      <text>暂无隐患记录</text>
+      <view class="btn-add-hazard-big" bindtap="onAddHazard">添加隐患</view>
+    </view>
+
+    <view
+      wx:for="{{hazards}}"
+      wx:key="id"
+      class="card hazard-card"
+      bindtap="onOpenHazard"
+      data-id="{{item.id}}"
+    >
+      <view class="hazard-head">
+        <text class="hazard-seq">#{{item.seq}}</text>
+        <text class="hazard-type">{{item.hazard_type || '隐患'}}</text>
+        <view wx:if="{{!isWenti}}" class="tag {{item.statusDone ? 'tag-success' : 'tag-warning'}}" catchtap="onToggleStatus" data-id="{{item.id}}" data-index="{{index}}">
+          {{item.statusLabel}} ▸
+        </view>
+        <view class="btn-delete-hazard" catchtap="onDeleteHazard" data-id="{{item.id}}">✕</view>
+      </view>
+      <text class="hazard-desc">{{item.descSummary}}</text>
+      <view class="hazard-photo-row">
+        <view class="photo-pair">
+          <view class="photo-slot">
+            <image
+              wx:if="{{item.has_hazard_photo && item.photoThumb}}"
+              class="hazard-thumb"
+              src="{{item.photoThumb}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="hazard-thumb hazard-thumb-placeholder">隐患照片</view>
+            <text class="photo-label">隐患</text>
+          </view>
+          <view wx:if="{{!isWenti}}" class="photo-slot">
+            <image
+              wx:if="{{item.has_rectify_photo && item.rectifyThumb}}"
+              class="hazard-thumb"
+              src="{{item.rectifyThumb}}"
+              mode="aspectFill"
+            />
+            <view wx:elif="{{item.statusDone}}" class="hazard-thumb hazard-thumb-placeholder">加载中</view>
+            <view wx:else class="hazard-thumb hazard-thumb-placeholder">待整改</view>
+            <text class="photo-label {{item.statusDone ? 'label-done' : ''}}">整改</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <block wx:if="{{isWenti}}">
+      <view class="section-head">
+        <text class="section-title">电气防火检测</text>
+      </view>
+      <view class="card nav-card" bindtap="onOpenDetection">
+        <view class="nav-card-inner">
+          <text class="nav-card-label">红外检测 / 接地电阻 / 7类检测记录</text>
+          <text class="nav-card-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="section-head">
+        <text class="section-title">附表检测结果</text>
+      </view>
+      <view class="card nav-card" bindtap="onOpenChecklist">
+        <view class="nav-card-inner">
+          <text class="nav-card-label">配电装置 / 开关插座 / 配电线路 / 照明装置</text>
+          <text class="nav-card-arrow">›</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="footer-spacer"></view>
+  </block>
+
+  <view wx:if="{{!loading && !loadError && allSceneDone}}" class="footer-bar footer-done">
+    <text class="footer-done-text">任务已完成</text>
+  </view>
+  <view wx:elif="{{!loading && !loadError && project}}" class="footer-bar footer-hint">
+    <text>{{isWenti ? '请上传场所照片并添加隐患记录' : '请上传企业门面与廉政监督卡照片'}}</text>
+  </view>
+</view>

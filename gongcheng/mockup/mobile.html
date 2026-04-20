@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>安全隐患检查系统 - 工人端</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#eef2ff;
+    --success:#10b981;--success-light:#ecfdf5;
+    --warning:#f59e0b;--warning-light:#fffbeb;
+    --danger:#ef4444;
+    --bg:#f8fafc;--card:#ffffff;
+    --text:#0f172a;--text2:#64748b;--text3:#94a3b8;
+    --border:#e2e8f0;
+    --radius:16px;--radius-sm:12px;
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);max-width:414px;margin:0 auto;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  @media(min-width:500px){body{box-shadow:0 0 60px rgba(0,0,0,.08);border-left:1px solid #eee;border-right:1px solid #eee}}
+
+  .status-bar{height:44px;background:var(--card);display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-size:14px;font-weight:700;color:var(--text)}
+  .nav-bar{height:52px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;position:relative;letter-spacing:-.3px}
+  .nav-bar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+  .nav-bar .back{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:12px;transition:background .15s}
+  .nav-bar .back:active{background:var(--primary-light)}
+  .nav-bar .back svg{width:22px;height:22px;color:var(--text)}
+
+  .page{display:none;min-height:calc(100vh - 96px);padding-bottom:80px}
+  .page.active{display:block;animation:pageIn .3s ease}
+  @keyframes pageIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+
+  .tab-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:414px;height:60px;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.04);display:flex;z-index:40;padding-bottom:var(--safe-bottom)}
+  .tab-bar-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);transition:color .2s}
+  .tab-bar-item.active{color:var(--primary)}
+  .tab-bar-item svg{width:24px;height:24px;margin-bottom:2px}
+  .tab-bar-item span{font-size:10px;font-weight:600}
+
+  .search-bar{margin:12px 16px;background:var(--card);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px;color:var(--text3);font-size:14px;box-shadow:0 1px 4px rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.04)}
+  .search-bar svg{width:18px;height:18px;flex-shrink:0;opacity:.5}
+
+  .section-title{padding:16px 16px 8px;font-size:13px;color:var(--text3);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+
+  .project-card{background:var(--card);margin:0 12px 10px;border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .2s;border:1px solid rgba(0,0,0,.03);box-shadow:0 1px 4px rgba(0,0,0,.03)}
+  .project-card:active{transform:scale(.97);box-shadow:0 0 0 rgba(0,0,0,0)}
+  .project-card .name{font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.2px}
+  .project-card .info{font-size:12px;color:var(--text2);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+  .project-card .progress-wrap{display:flex;align-items:center;gap:10px;margin-top:12px}
+  .project-card .progress-bg{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+  .project-card .progress-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+  .project-card .progress-text{font-size:12px;color:var(--text3);white-space:nowrap;font-weight:600}
+
+  .tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.2px}
+  .tag::before{content:'';width:5px;height:5px;border-radius:50%}
+  .tag-done{background:var(--success-light);color:#059669}.tag-done::before{background:var(--success)}
+  .tag-progress{background:var(--primary-light);color:var(--primary)}.tag-progress::before{background:var(--primary)}
+  .tag-pending{background:#fff7ed;color:#c2410c}.tag-pending::before{background:var(--warning)}
+  .tag-type{background:var(--primary-light);color:var(--primary)}.tag-type::before{display:none}
+  .tag-major{background:#fef2f2;color:var(--danger)}.tag-major::before{display:none}
+
+  .hazard-item{background:var(--card);margin:0 12px 8px;border-radius:var(--radius-sm);padding:14px;cursor:pointer;transition:all .2s;border:1px solid rgba(0,0,0,.03)}
+  .hazard-item:active{transform:scale(.97)}
+  .hazard-item .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .hazard-item .seq{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--primary-light),#ddd6fe);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--primary);flex-shrink:0}
+  .hazard-item .desc{font-size:14px;line-height:1.5;flex:1;font-weight:500}
+  .hazard-item .bottom{display:flex;align-items:center;justify-content:space-between}
+  .hazard-item .photo-status{font-size:12px;display:flex;align-items:center;gap:5px;font-weight:600}
+  .hazard-item .photo-status.done{color:var(--success)}
+  .hazard-item .photo-status.pending{color:var(--warning)}
+
+  .scene-entry{background:var(--card);margin:0 12px 8px;border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;border:1px solid rgba(0,0,0,.03)}
+  .scene-entry:active{transform:scale(.97)}
+  .scene-entry .icon{width:46px;height:46px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .scene-entry .icon svg{width:22px;height:22px}
+
+  .detail-section{background:var(--card);margin:0 12px 10px;border-radius:var(--radius-sm);padding:16px;border:1px solid rgba(0,0,0,.03)}
+  .detail-section .label{font-size:12px;color:var(--text3);margin-bottom:4px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .detail-section .value{font-size:14px;line-height:1.6}
+
+  .photo-area{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border-radius:var(--radius-sm);overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(0,0,0,.04)}
+  .photo-area .placeholder{text-align:center;color:var(--text3)}
+  .photo-area .placeholder svg{width:44px;height:44px;margin-bottom:10px;opacity:.4}
+
+  .capture-btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;letter-spacing:.2px}
+  .capture-btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}
+  .capture-btn.primary:active{transform:scale(.97);box-shadow:0 2px 8px rgba(99,102,241,.2)}
+  .capture-btn.done{background:var(--success-light);color:var(--success)}
+  .capture-btn svg{width:20px;height:20px}
+
+  .camera-overlay{position:fixed;inset:0;background:#000;z-index:100;display:none;flex-direction:column}
+  .camera-overlay.active{display:flex}
+  .camera-viewfinder{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .mock-camera{width:100%;height:100%;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);display:flex;align-items:center;justify-content:center;position:relative}
+  .mock-camera .crosshair{width:64px;height:64px;border:2px solid rgba(255,255,255,.2);border-radius:50%;position:relative}
+  .mock-camera .crosshair::before,.mock-camera .crosshair::after{content:'';position:absolute;background:rgba(255,255,255,.2)}
+  .mock-camera .crosshair::before{width:1px;height:20px;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .mock-camera .crosshair::after{width:20px;height:1px;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .watermark-preview{position:absolute;bottom:0;left:0;padding:14px}
+  .watermark-left{background:rgba(30,58,138,.80);border-radius:8px;padding:10px 12px;color:#fff;font-size:11px;line-height:1.8;backdrop-filter:blur(4px)}
+  .watermark-left .org-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .watermark-left .org-logo{width:32px;height:20px;background:#fff;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;overflow:hidden}
+  .watermark-left .org-logo span{color:#1e3a8a;font-size:7px;font-weight:900;letter-spacing:-.3px}
+  .watermark-left .org-name{font-weight:800;font-size:12px;color:#ef4444}
+  .watermark-left .wm-row{white-space:pre;font-family:"PingFang SC","Microsoft YaHei",monospace}
+
+  .camera-controls{height:130px;background:linear-gradient(180deg,rgba(0,0,0,.6),#000);display:flex;align-items:center;justify-content:center;gap:44px;padding-bottom:var(--safe-bottom)}
+  .shutter{width:72px;height:72px;border-radius:50%;border:4px solid rgba(255,255,255,.9);background:transparent;cursor:pointer;position:relative;transition:all .15s}
+  .shutter::after{content:'';position:absolute;inset:5px;border-radius:50%;background:#fff;transition:all .1s}
+  .shutter:active{transform:scale(.93)}.shutter:active::after{background:#e5e7eb}
+  .camera-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;backdrop-filter:blur(4px)}
+  .camera-btn:active{background:rgba(255,255,255,.2)}
+  .camera-btn svg{width:20px;height:20px}
+
+  .preview-overlay{position:fixed;inset:0;background:#000;z-index:110;display:none;flex-direction:column}
+  .preview-overlay.active{display:flex}
+  .preview-image{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .preview-image canvas{max-width:100%;max-height:100%}
+  .preview-actions{height:110px;background:linear-gradient(180deg,rgba(0,0,0,.6),#000);display:flex;align-items:center;justify-content:center;gap:64px;padding-bottom:var(--safe-bottom)}
+  .preview-action{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;font-size:13px;cursor:pointer;background:none;border:none;font-weight:600}
+  .preview-action .circle{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .preview-action:active .circle{transform:scale(.9)}
+  .preview-action .circle svg{width:24px;height:24px}
+
+  .upload-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,.85);backdrop-filter:blur(12px);color:#fff;border-radius:18px;padding:28px 36px;text-align:center;z-index:120;display:none;min-width:140px}
+  .upload-toast.active{display:block;animation:toastPop .3s cubic-bezier(.4,0,.2,1)}
+  @keyframes toastPop{from{opacity:0;transform:translate(-50%,-50%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+  .upload-toast svg{width:44px;height:44px;margin-bottom:10px}
+  .upload-toast .spinner{animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .profile-header{background:linear-gradient(135deg,var(--primary) 0%,#8b5cf6 50%,var(--primary-dark) 100%);padding:48px 24px 36px;color:#fff;position:relative;overflow:hidden}
+  .profile-header::before{content:'';position:absolute;top:-40%;right:-20%;width:60%;height:120%;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 60%);pointer-events:none}
+  .profile-header .avatar{width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;border:2px solid rgba(255,255,255,.15)}
+  .profile-header .name{font-size:20px;font-weight:800;letter-spacing:-.3px}
+  .profile-header .role{font-size:13px;opacity:.7;margin-top:4px;font-weight:500}
+  .profile-stats{display:flex;margin:-24px 16px 16px;background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.03)}
+  .profile-stats .stat{flex:1;text-align:center}
+  .profile-stats .stat .num{font-size:24px;font-weight:800;color:var(--primary);letter-spacing:-1px}
+  .profile-stats .stat .label{font-size:11px;color:var(--text3);margin-top:2px;font-weight:600}
+  .menu-group{background:var(--card);margin:12px;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,.03)}
+  .menu-item{padding:15px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+  .menu-item:last-child{border-bottom:none}
+  .menu-item:active{background:#f8fafc}
+  .menu-item .mi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .menu-item .mi-icon svg{width:18px;height:18px}
+  .menu-item .mi-label{flex:1;font-size:15px;font-weight:500}
+  .menu-item .mi-arrow{color:var(--text3);font-size:18px}
+</style>
+</head>
+<body>
+
+<div class="status-bar"><span>09:41</span><span style="display:flex;align-items:center;gap:6px;font-size:12px"><svg width="16" height="12" viewBox="0 0 16 12"><path d="M1 8h2v4H1zM5 5h2v7H5zM9 3h2v9H9zM13 0h2v12h-2z" fill="#333"/></svg><svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="2.5" stroke="#333" stroke-width="1" fill="none"/><rect x="23" y="4" width="2" height="4" rx="1" fill="#333"/><rect x="2" y="3" width="14" height="6" rx="1" fill="#333"/></svg></span></div>
+
+<div class="page active" id="page-list">
+  <div class="nav-bar">检查任务</div>
+  <div class="search-bar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>搜索项目名称</div>
+  <div id="projectListContent"></div>
+</div>
+
+<div class="page" id="page-project">
+  <div class="nav-bar"><div class="back" onclick="goBack('page-list')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></div><span id="projectTitle">项目详情</span></div>
+  <div id="projectDetailContent"></div>
+</div>
+
+<div class="page" id="page-hazard">
+  <div class="nav-bar"><div class="back" onclick="goBack('page-project')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg></div>隐患详情</div>
+  <div id="hazardDetailContent"></div>
+</div>
+
+<div class="page" id="page-mine">
+  <div class="profile-header"><div class="avatar">👷</div><div class="name">张明（检查组）</div><div class="role">应急管理局 · 安全检查员</div></div>
+  <div class="profile-stats"><div class="stat"><div class="num">5</div><div class="label">分配项目</div></div><div class="stat"><div class="num">2</div><div class="label">已完成</div></div><div class="stat"><div class="num">12</div><div class="label">已上传</div></div></div>
+  <div class="menu-group">
+    <div class="menu-item"><div class="mi-icon" style="background:var(--success-light)"><svg style="color:var(--success)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="mi-label">已完成项目</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item"><div class="mi-icon" style="background:var(--primary-light)"><svg style="color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div><span class="mi-label">我的照片</span><span class="mi-arrow">›</span></div>
+    <div class="menu-item"><div class="mi-icon" style="background:var(--warning-light)"><svg style="color:var(--warning)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div><span class="mi-label">水印设置</span><span class="mi-arrow">›</span></div>
+  </div>
+  <div class="menu-group"><div class="menu-item"><div class="mi-icon" style="background:#f1f5f9"><svg style="color:var(--text3)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span class="mi-label">关于系统</span><span class="mi-arrow">›</span></div></div>
+</div>
+
+<div class="tab-bar" id="tabBar">
+  <div class="tab-bar-item active" onclick="switchTab('page-list',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg><span>任务</span></div>
+  <div class="tab-bar-item" onclick="switchTab('page-mine',this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><span>我的</span></div>
+</div>
+
+<div class="camera-overlay" id="cameraOverlay">
+  <div class="camera-viewfinder"><div class="mock-camera"><div class="crosshair"></div><div class="watermark-preview"><div class="watermark-left"><div class="org-row"><span class="org-logo"><span>SZEM</span></span><span class="org-name">区安委办（应急局）</span></div><div class="wm-row">拍 摄 时 间：<span id="wm-time"></span></div><div class="wm-row">地　　　点：<span id="wm-location"></span></div><div class="wm-row">所 属 项 目：<span id="wm-project"></span></div></div></div></div></div>
+  <div class="camera-controls"><button class="camera-btn" onclick="closeCamera()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button><button class="shutter" onclick="takePhoto()"></button><button class="camera-btn"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button></div>
+</div>
+
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-image"><canvas id="previewCanvas"></canvas></div>
+  <div class="preview-actions">
+    <button class="preview-action" onclick="retakePhoto()"><span class="circle" style="background:rgba(255,255,255,.12);backdrop-filter:blur(4px)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></span>重拍</button>
+    <button class="preview-action" onclick="confirmPhoto()"><span class="circle" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 4px 14px rgba(99,102,241,.4)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></span>确认上传</button>
+  </div>
+</div>
+
+<div class="upload-toast" id="uploadToast"><svg class="spinner" fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9"/></svg><div id="uploadToastText">正在上传...</div></div>
+
+<script>
+const P=[
+  {id:1,name:"湾区激光谷大厦项目",street:"观湖街道",address:"观城社区横坑水库西侧",contact:"李红",phone:"159****9381",cat:"建筑施工",date:"2025-03-05",status:"done",sp:{f:1,c:1},hz:[{seq:1,type:"设备设施",desc:"脚手架横杆端头突出部分低于10cm",risk:"坍塌",cat:"一般隐患",up:1},{seq:2,type:"消防安全",desc:"临时用电线路未穿管保护",risk:"火灾",cat:"一般隐患",up:1},{seq:3,type:"安全防护",desc:"基坑边缘防护栏杆缺失",risk:"高处坠落",cat:"重大隐患",up:1},{seq:4,type:"安全管理",desc:"施工现场未设置安全警示标志",risk:"人员伤害",cat:"一般隐患",up:1}]},
+  {id:2,name:"小象超市冷库",street:"龙华街道",address:"共和农贸批发市场G15-G17位",contact:"黄浩磊",phone:"150****5845",cat:"冷库",date:"2025-03-02",status:"progress",sp:{f:1,c:0},hz:[{seq:1,type:"消防安全",desc:"货物占用安全疏散通道",risk:"疏散困难",cat:"一般隐患",up:1},{seq:2,type:"消防安全",desc:"消火栓、灭火器被遮挡",risk:"灭火延误",cat:"一般隐患",up:1},{seq:3,type:"安全管理",desc:"未张贴风险告知卡",risk:"人员不知风险",cat:"一般隐患",up:0},{seq:4,type:"电气安全",desc:"电线套管不全",risk:"触电/火灾",cat:"一般隐患",up:0},{seq:5,type:"消防安全",desc:"消火栓消防水带密封圈老化脱落",risk:"消防失效",cat:"一般隐患",up:0}]},
+  {id:3,name:"锦绣科学园二期项目",street:"观湖街道",address:"大和路南侧A816-0175宗地",contact:"张明",phone:"138****8003",cat:"建筑施工",date:"2025-03-10",status:"pending",sp:{f:0,c:0},hz:[{seq:1,type:"设备设施",desc:"塔吊基础螺栓松动",risk:"坍塌",cat:"重大隐患",up:0},{seq:2,type:"消防安全",desc:"施工材料堆放杂乱",risk:"火灾",cat:"一般隐患",up:0},{seq:3,type:"安全防护",desc:"临边防护不到位",risk:"高处坠落",cat:"一般隐患",up:0}]}
+];
+let cP=null,cH=null,cPT='';
+
+function renderList(){
+  const sts=[...new Set(P.map(p=>p.street))];let h='';
+  sts.forEach(s=>{const ps=P.filter(p=>p.street===s);h+=`<div class="section-title">${s} (${ps.length})</div>`;
+    ps.forEach(p=>{const u=p.hz.filter(x=>x.up).length,t=p.hz.length,pc=Math.round(u/t*100),cl=pc===100?'var(--success)':pc>0?'var(--primary)':'var(--danger)';
+      const tc=p.status==='done'?'tag-done':p.status==='progress'?'tag-progress':'tag-pending',tt=p.status==='done'?'已完成':p.status==='progress'?'进行中':'待处理';
+      h+=`<div class="project-card" onclick="openProj(${p.id})"><div style="display:flex;align-items:center;justify-content:space-between"><div class="name">${p.name}</div><span class="tag ${tc}">${tt}</span></div><div class="info"><svg style="width:13px;height:13px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>${p.address}</div><div class="info"><svg style="width:13px;height:13px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>${p.contact} &nbsp; ${p.date}</div><div class="progress-wrap"><div class="progress-bg"><div class="progress-fill" style="width:${pc}%;background:${cl}"></div></div><div class="progress-text">${u}/${t} 照片</div></div></div>`});});
+  document.getElementById('projectListContent').innerHTML=h;
+}
+
+function openProj(id){
+  cP=P.find(p=>p.id===id);document.getElementById('projectTitle').textContent=cP.name;
+  const u=cP.hz.filter(x=>x.up).length,t=cP.hz.length;
+  let h=`<div style="padding:12px">
+    <div class="detail-section"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:15px;font-weight:700">基本信息</span><span class="tag tag-type">${cP.cat}</span></div><div style="font-size:13px;color:var(--text2);line-height:2.2"><div style="display:flex;align-items:center;gap:6px"><svg style="width:14px;height:14px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>${cP.street} · ${cP.address}</div><div style="display:flex;align-items:center;gap:6px"><svg style="width:14px;height:14px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>${cP.contact} &nbsp; ${cP.phone}</div><div style="display:flex;align-items:center;gap:6px"><svg style="width:14px;height:14px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>检查日期：${cP.date}</div></div></div>
+    <div class="section-title" style="padding-left:4px">现场照片</div>
+    <div class="scene-entry" onclick="openCamera('facade')"><div class="icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe)"><svg style="color:#2563eb" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div><div style="flex:1"><div style="font-size:15px;font-weight:600">企业门面照片</div><div style="font-size:12px;color:${cP.sp.f?'var(--success)':'var(--warning)'};margin-top:3px;font-weight:600">${cP.sp.f?'✓ 已上传':'⏳ 待拍摄'}</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+    <div class="scene-entry" onclick="openCamera('card')"><div class="icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)"><svg style="color:#7c3aed" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg></div><div style="flex:1"><div style="font-size:15px;font-weight:600">廉政监督卡照片</div><div style="font-size:12px;color:${cP.sp.c?'var(--success)':'var(--warning)'};margin-top:3px;font-weight:600">${cP.sp.c?'✓ 已上传':'⏳ 待拍摄'}</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+    <div class="section-title" style="padding-left:4px">隐患整改 (${u}/${t})</div>
+    ${cP.hz.map(h=>`<div class="hazard-item" onclick="openHz(${cP.id},${h.seq})"><div class="top"><div class="seq">${h.seq}</div><div class="desc">${h.desc}</div><span class="tag ${h.cat==='重大隐患'?'tag-major':'tag-type'}">${h.cat}</span></div><div class="bottom"><div style="display:flex;gap:6px"><span class="tag tag-type">${h.type}</span><span style="font-size:12px;color:var(--danger);font-weight:600">风险：${h.risk}</span></div><div class="photo-status ${h.up?'done':'pending'}">${h.up?'<svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> 已上传':'<svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg> 待拍摄'}</div></div></div>`).join('')}
+  </div>`;
+  document.getElementById('projectDetailContent').innerHTML=h;navTo('page-project');
+}
+
+function openHz(pid,seq){
+  cP=P.find(p=>p.id===pid);cH=cP.hz.find(h=>h.seq===seq);
+  let h=`<div style="padding:12px">
+    <div class="detail-section"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span class="tag tag-type">${cH.type}</span><span class="tag ${cH.cat==='重大隐患'?'tag-major':'tag-type'}">${cH.cat}</span></div><div class="label">隐患描述</div><div class="value" style="font-weight:600;margin-bottom:12px">${cH.desc}</div><div class="label">存在的风险</div><div class="value" style="color:var(--danger);font-weight:600">${cH.risk}</div></div>
+    <div class="detail-section"><div class="label" style="margin-bottom:10px">隐患代表照片（来自检查清单）</div><div class="photo-area"><div style="width:100%;height:100%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;flex-direction:column;align-items:center;justify-content:center"><svg style="width:48px;height:48px;color:#818cf8;margin-bottom:8px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><div style="color:#6366f1;font-size:13px;font-weight:600">隐患 ${cH.seq} 代表照片</div><div style="color:#a5b4fc;font-size:11px;margin-top:4px">${cH.desc}</div></div></div></div>
+    <div class="detail-section"><div class="label" style="margin-bottom:10px">整改照片</div>${cH.up?`<div class="photo-area" style="margin-bottom:14px"><div style="width:100%;height:100%;background:linear-gradient(135deg,#d1fae5,#a7f3d0);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative"><svg style="width:48px;height:48px;color:#34d399;margin-bottom:8px;opacity:.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><div style="color:#059669;font-size:13px;font-weight:600">整改照片（含水印）</div><div style="position:absolute;bottom:8px;left:8px;background:rgba(30,58,138,.80);border-radius:5px;padding:4px 7px;color:#fff;font-size:7px;line-height:1.6;backdrop-filter:blur(2px)"><div style="display:flex;align-items:center;gap:4px;margin-bottom:2px"><span style="background:#fff;border-radius:2px;padding:1px 3px;color:#1e3a8a;font-size:5px;font-weight:900">SZEM</span><span style="color:#ef4444;font-weight:800;font-size:8px">区安委办（应急局）</span></div><div>拍 摄 时 间：2025.03.02 10:30</div><div>地　　　点：${cP.name}</div><div>所 属 项 目：核查验收销号</div></div></div></div><button class="capture-btn done" onclick="openCamera('rectify')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>已上传 · 点击重新拍摄</button>`:`<div class="photo-area" style="margin-bottom:14px"><div class="placeholder"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg><div style="font-size:13px;margin-top:6px;font-weight:500">暂未上传整改照片</div></div></div><button class="capture-btn primary" onclick="openCamera('rectify')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>拍摄整改照片</button>`}</div></div>`;
+  document.getElementById('hazardDetailContent').innerHTML=h;navTo('page-hazard');
+}
+
+function navTo(id){const a=document.querySelector('.page.active');if(a)a.classList.remove('active');document.getElementById(id).classList.add('active');document.getElementById('tabBar').style.display=(id==='page-project'||id==='page-hazard')?'none':'flex'}
+function goBack(t){const a=document.querySelector('.page.active');if(a)a.classList.remove('active');document.getElementById(t).classList.add('active');document.getElementById('tabBar').style.display=(t==='page-project'||t==='page-hazard')?'none':'flex'}
+function switchTab(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab-bar-item').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('tabBar').style.display='flex'}
+
+function openCamera(type){cPT=type;const n=new Date();const ts=n.getFullYear()+'.'+String(n.getMonth()+1).padStart(2,'0')+'.'+String(n.getDate()).padStart(2,'0')+' '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');document.getElementById('wm-time').textContent=ts;document.getElementById('wm-location').textContent=(cP?cP.name:'');document.getElementById('wm-project').textContent='核查验收销号';document.getElementById('cameraOverlay').classList.add('active')}
+function closeCamera(){document.getElementById('cameraOverlay').classList.remove('active')}
+function takePhoto(){closeCamera();drawCanvas();document.getElementById('previewOverlay').classList.add('active')}
+
+function drawCanvas(){
+  const cv=document.getElementById('previewCanvas'),c=cv.getContext('2d');cv.width=800;cv.height=600;
+  const g=c.createLinearGradient(0,0,800,600);g.addColorStop(0,'#1a1a2e');g.addColorStop(.5,'#16213e');g.addColorStop(1,'#0f3460');c.fillStyle=g;c.fillRect(0,0,800,600);
+  c.fillStyle='rgba(255,255,255,.06)';c.font='22px sans-serif';c.textAlign='center';
+  const lb=cPT==='facade'?'企业门面照片':cPT==='card'?'廉政监督卡照片':'整改照片 #'+(cH?cH.seq:'');
+  c.fillText('[ 模拟拍摄 - '+lb+' ]',400,280);
+  c.fillStyle='rgba(30,58,138,.80)';rr(c,16,430,360,155,10);c.fill();
+  c.fillStyle='#fff';rr(c,28,446,56,30,4);c.fill();
+  c.fillStyle='#1e3a8a';c.textAlign='center';c.font='bold 10px sans-serif';c.fillText('SZEM',56,466);
+  c.textAlign='left';c.fillStyle='#ef4444';c.font='bold 16px sans-serif';c.fillText('区安委办（应急局）',94,466);
+  c.fillStyle='#fff';c.font='13px sans-serif';const n=new Date(),ts=n.getFullYear()+'.'+String(n.getMonth()+1).padStart(2,'0')+'.'+String(n.getDate()).padStart(2,'0')+' '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  c.fillText('拍 摄 时 间：'+ts,28,500);c.fillText('地\u3000\u3000\u3000点：'+(cP?cP.name:''),28,524);c.fillText('所 属 项 目：核查验收销号',28,548);
+}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
+function retakePhoto(){document.getElementById('previewOverlay').classList.remove('active');openCamera(cPT)}
+function confirmPhoto(){
+  document.getElementById('previewOverlay').classList.remove('active');const t=document.getElementById('uploadToast');t.classList.add('active');document.getElementById('uploadToastText').textContent='正在上传...';
+  setTimeout(()=>{document.getElementById('uploadToastText').innerHTML='<svg style="width:44px;height:44px" fill="none" stroke="#10b981" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div style="margin-top:10px;color:#10b981;font-weight:700">上传成功</div>';
+    if(cPT==='rectify'&&cH)cH.up=1;else if(cPT==='facade'&&cP)cP.sp.f=1;else if(cPT==='card'&&cP)cP.sp.c=1;
+    const u=cP.hz.filter(h=>h.up).length;if(u===cP.hz.length&&cP.sp.f&&cP.sp.c)cP.status='done';else if(u>0||cP.sp.f||cP.sp.c)cP.status='progress';
+    setTimeout(()=>{t.classList.remove('active');if(cPT==='rectify')openHz(cP.id,cH.seq);else openProj(cP.id);renderList()},800);
+  },1200);
+}
+renderList();
+</script>
+</body>
+</html>

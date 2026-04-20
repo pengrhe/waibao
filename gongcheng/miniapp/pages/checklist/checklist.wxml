@@ -1,0 +1,43 @@
+<view class="page">
+  <view class="body-wrap">
+  <scroll-view class="tab-bar" scroll-y>
+    <view
+      wx:for="{{tableKeys}}" wx:key="*this"
+      class="tab-item {{activeTable === item ? 'tab-active' : ''}}"
+      bindtap="onTableChange" data-ti="{{item}}"
+    >{{tableNames[item]}}</view>
+  </scroll-view>
+
+  <scroll-view class="body-content" scroll-y>
+  <view wx:if="{{loading}}" class="state">加载中…</view>
+
+  <block wx:else>
+    <view wx:if="{{!items.length}}" class="state">暂无数据</view>
+
+    <view wx:for="{{items}}" wx:key="id" class="card item-card">
+      <view class="item-head">
+        <text class="item-seq">#{{item.item_seq}}</text>
+        <picker
+          mode="selector"
+          range="{{resultOptions}}"
+          value="{{0}}"
+          bindchange="onResultChange"
+          data-idx="{{index}}"
+        >
+          <view class="item-result {{item.result === '不符合规范要求' ? 'result-fail' : (item.result === '符合规范要求' ? 'result-pass' : 'result-neutral')}}">
+            {{item.result || '-'}} ▾
+          </view>
+        </picker>
+      </view>
+      <view wx:if="{{item.text}}" class="item-text">{{item.text}}</view>
+    </view>
+
+    <view class="save-bar" wx:if="{{items.length}}">
+      <button class="btn-save-all" bindtap="onSave" loading="{{saving}}" disabled="{{!dirty}}">
+        {{dirty ? '保存修改' : '已保存'}}
+      </button>
+    </view>
+  </block>
+  </scroll-view>
+  </view>
+</view>

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <!-- for 360browser to use webkit core as default-->
+	    <meta name="renderer" content="webkit">
+		<title>知识产权网-知识产权一站式服务平台——新闻资讯</title>
+
+		<script src="../../images/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../images/jquery.base64.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="../../images/common.css" />
+		<link rel="stylesheet" type="text/css" href="../../images/index.css" />
+		<link rel="stylesheet" href="../../images/twoStage_right.css" />
+		<link rel="stylesheet" href="../../images/sjzx.css" />
+		<link rel="stylesheet" type="text/css" href="../../images/xys.css" />
+                
+<script type="text/javascript" src="../../images/modernizr.js"></script>
+
+	</head>
+	<body>
+		<header>
+			<!--头部嵌套-->
+			<link rel="stylesheet" type="text/css" href="../../images/iconfont.css" />
+<script type="text/javascript">
+        function checksearchword(thisform)
+        {
+            //alert(thisform.channelid.value);
+			//alert(thisform.fieldname.value);
+			//alert(thisform.sw.value.length);
+			//alert("1111");
+			var str="";
+			if(thisform.sw.value.length>0){
+				if(thisform.fieldname.value.length>0){
+					str=thisform.fieldname.value+"='"+thisform.sw.value+"'";
+				}else{
+					str=thisform.sw.value;
+				}
+				//alert(str);
+				thisform.searchword.value=str;
+			}else{
+				alert("请输入检索词！");
+				return false;
+			}
+			return true;
+        }
+		
+		function checksearchword_test()
+        {
+			var WAS_JS=document.outlinesearchform2;
+			if(WAS_JS.searchword.value.length>0){				
+            document.outlinesearchform2.submit();			    
+			}else{
+			alert("搜索内容不能为空");
+			return false;
+			}
+            return true;
+			
+        }
+		function doiconsearch(iconsw){			
+	$("#searchword").val(iconsw.innerHTML);
+	$("#outlinesearchform3").submit();
+		}
+    </script>
+<!--登陆之后-->
+			<!--<div class="top clearfix">
+				<a href="http://search.cnipr.com/" target="_blank">
+					<div class="fl">					
+						<div class="zljsinput">
+						<input type="text" name="" id="" value="" placeholder="专利检索" />
+						<i class="iconfont"></i>
+					</div>
+					</div>
+				</a>
+				<div class="fr">				
+					<ul class="top_tools fl">
+						<li><a target="_blank" href="../../sy/wytg/201708/t20170815_219990.html" class="contribute">我要投稿</a></li>
+						<li><a href="javascript:;" class="username">王越，您好</a></li>
+						<li><a href="javascript:;" class="unlogin">退出</a></li>
+						<li><a target="_blank" href="../../wdcnipr/" class="mycnipr">我的CNIPR</a></li>
+					</ul>
+					<ul class="language fl">
+						<li><a target="_blank" href="http://english.cnipr.com/" class="">English</a></li>
+						<li><a target="_blank" href="http://old.cnipr.com" class="bordernone">旧版回顾</a></li>
+					</ul>
+				</div>
+			</div>-->
+			
+			<!--登陆之前-->
+			<div class="top clearfix">
+				<a href="http://search.cnipr.com/" target="_blank">
+					<div class="fl">					
+						<div class="zljsinput">
+						<input type="text" name="" id="" value="" placeholder="专利检索" />
+						<i class="iconfont"></i>
+					</div>
+				</a>
+				</div>
+				<div class="fr">				
+					<ul class="top_tools fl">
+						<li><a target="_blank" href="../../sy/wytg/201708/t20170815_219990.html" class="contribute">我要投稿</a></li>
+						<!--
+                        	
+                        
+						<li><img src="../../images/person_icon.png" /><a href="http://www.cnipr.com/web/" class="login">登录</a><span>/</span><a href="http://ids.cnipr.com/ids/admin/userhome/regUser.jsp" class="register">注册</a></li>
+						-->
+					</ul>
+					<ul class="language fl">
+						<!--
+						<li><a target="_blank" href="http://english.cnipr.com/" class="">English</a></li>
+						-->
+						<li><a target="_blank" href="http://www.ipph.cn/" class="bordernone" >知识产权出版社有限责任公司</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<!--phone登陆之后-->
+			<!--<div class="top phonetop clearfix">
+				<div class="fl" style="margin-left: 2%;">
+					<ul class="top_tools">
+						<li><a href="javascript:;" class="username">王越，您好</a></li>
+						<li><a target="_blank" href="../../wdcnipr/" class="mycnipr">我的CNIPR</a></li>
+					</ul>
+				</div>
+				<div class="fr">
+					<div class="phone_dh clearfix">
+						<img src="../../images/phoneDHicon.png" class="fl" /><span class="fl">导航</span>						
+					</div>
+				</div>
+			</div>-->
+			<!--phone登陆之前-->
+			<div class="top phonetop clearfix">
+				<div class="fl" style="margin-left: 2%;">
+					<ul class="top_tools">
+						<!--<li><img src="../../images/person_icon.png" /><a href="http://www.cnipr.com/web/" class="login">登录</a><span>/</span><a href="http://ids.cnipr.com/ids/admin/userhome/regUser.jsp" class="register">注册</a></li>
+						<li><a target="_blank" href="../../wdcnipr/" class="mycnipr">我的CNIPR</a></li>-->
+					</ul>
+				</div>
+				<div class="fr">
+					<div class="phone_dh clearfix">
+						<img src="../../images/phoneDHicon.png" class="fl" /><span class="fl">导航</span>						
+					</div>
+				</div>
+			</div>
+
+
+<div class="phone_dh_list">
+				<ul class="clearfix">
+					<li class="clearfix"><a href="../../">首页</a></li>
+					<li class="clearfix">
+						<a href="../">视角</a><span class="show_phonelist">+</span>
+						<div class="clear"></div>
+						<ul class="phonenav_list_ul">
+						
+							<li><a href="../szyw/" target="_blank">时政要闻</a></li>
+						
+							<li><a href="./" target="_blank">新闻资讯</a></li>
+						
+							<li><a href="../ft/" target="_blank">专家访谈</a></li>
+						
+							<li><a href="../gg/" target="_blank">通知公告</a></li>
+						
+							<li><a href="../al/" target="_blank">案例解读</a></li>
+						
+							<li><a href="../zt/" target="_blank">专题专栏</a></li>
+						
+						</ul>
+					</li>
+					<li class="clearfix">
+						<a href="../../fw/">服务</a><span class="show_phonelist">+</span>
+						<ul class="phonenav_list_ul">
+							
+							<li><a href="../../fw/cpfw/" target="_blank">产品服务</a></li>
+						
+							<li><a href="../../fw/fwtd/" target="_blank">服务团队</a></li>
+						
+						</ul>
+					</li>
+					<li class="clearfix">
+						<a href="../../xy/">学院</a><span class="show_phonelist">+</span>
+						<ul class="phonenav_list_ul">
+							
+							<li><a href="../../xy/hstj/" target="_blank">图书期刊</a></li>
+						
+							<li><a href="../../xy/swzs/" target="_blank">实务知识</a></li>
+						
+							<li><a href="../../xy/zjzk/" target="_blank">专家智库</a></li>
+						
+							<li><a href="../../xy/xstt/" target="_blank">学术团体</a></li>
+						
+						</ul>
+					</li>
+					<li class="clearfix"><a href="../../sp/">视频</a><span class="show_phonelist">+</span>
+						<ul class="phonenav_list_ul">
+							
+							<li><a href="../../sp/IPDKS/" target="_blank">IP大咖说</a></li>
+						
+							<li><a href="../../sp/ZSCQDT/" target="_blank">知识产权鼎谈</a></li>
+						
+							<li><a href="../../sp/ZTBD/" target="_blank">专题报道</a></li>
+						
+							<li><a href="../../sp/qt/" target="_blank">其他</a></li>
+						
+						</ul>
+					</li>
+					<!--
+					<li class="clearfix"><a href="http://bbs.cnipr.com">论坛</a></li>
+					-->
+					<li class="clearfix">
+						<a href="../../zy/">资源</a><span class="show_phonelist">+</span>
+						<ul class="phonenav_list_ul">
+							
+							<li><a href="../../zy/sjtj/" target="_blank">数据统计</a></li>
+						
+							<li><a href="../../zy/ipsqzn/" target="_blank">IP申请指南</a></li>
+						
+							<li><a href="../../zy/flfg/" target="_blank">政策法规</a></li>
+						
+							<li><a href="../../zy/wzdh/" target="_blank">IP导航</a></li>
+						
+						</ul>
+					</li>
+				</ul>
+			</div>
+<div class="top_nav clearfix">
+				<a class="nav_logo fl" href="../../">
+					<img src="../../images/nav_logo.png" />
+				</a>
+				<div class="fl">
+					<ul class="nav_list clearfix">
+						<li><a href="../../">首页</a></li>
+						<li>
+							<a href="../">视角</a>
+							<span class="tripleL"><img src="../../images/tripleL.png" /></span>
+							<ul class="nav_list_ul" style="display: none;">
+								
+								
+							<li><a href="../szyw/" target="_blank">时政要闻</a></li>
+							
+							
+								<li class="bordernone"><a href="./" target="_blank">新闻资讯</a></li>
+								
+						
+								
+							<li><a href="../ft/" target="_blank">专家访谈</a></li>
+							
+							
+								<li class="bordernone"><a href="../gg/" target="_blank">通知公告</a></li>
+								
+						
+								
+							<li><a href="../al/" target="_blank">案例解读</a></li>
+							
+							
+								<li class="bordernone"><a href="../zt/" target="_blank">专题专栏</a></li>
+								
+						
+							</ul>
+						</li>
+						<li>
+							<a href="../../fw/">服务</a>
+							<span class="tripleL"><img src="../../images/tripleL.png" /></span>
+							<ul class="nav_list_ul" style="display: none;">
+								
+								
+							<li><a href="../../fw/cpfw/" target="_blank">产品服务</a></li>
+							
+							
+								<li class="bordernone"><a href="../../fw/fwtd/" target="_blank">服务团队</a></li>
+								
+						
+							</ul>
+						</li>
+						<li>
+							<a href="../../xy/">学院</a>
+							<span class="tripleL"><img src="../../images/tripleL.png" /></span>
+							<ul class="nav_list_ul" style="display: none;">
+								
+								
+							<li><a href="../../xy/hstj/" target="_blank">图书期刊</a></li>
+							
+							
+								<li class="bordernone"><a href="../../xy/swzs/" target="_blank">实务知识</a></li>
+								
+						
+								
+							<li><a href="../../xy/zjzk/" target="_blank">专家智库</a></li>
+							
+							
+								<li class="bordernone"><a href="../../xy/xstt/" target="_blank">学术团体</a></li>
+								
+						
+							</ul>
+						</li>
+						<li class="clearfix"><a href="../../sp/">视频</a>
+							<span class="tripleL"><img src="../../images/tripleL.png" /></span>
+							<ul class="nav_list_ul" style="display: none;">
+								
+								
+							<li><a href="../../sp/IPDKS/" target="_blank">IP大咖说</a></li>
+							
+							
+								<li class="bordernone"><a href="../../sp/ZSCQDT/" target="_blank">知识产权鼎谈</a></li>
+								
+						
+								
+							<li><a href="../../sp/ZTBD/" target="_blank">专题报道</a></li>
+							
+							
+								<li class="bordernone"><a href="../../sp/qt/" target="_blank">其他</a></li>
+								
+						
+							</ul>
+						</li>
+						<!--
+						<li><a href="http://bbs.cnipr.com">论坛</a></li>
+						-->
+						<li>
+							<a href="../../zy/">资源</a>
+							<span class="tripleL"><img src="../../images/tripleL.png" /></span>
+							<ul class="nav_list_ul" style="display: none;">
+								
+								
+							<li><a href="../../zy/sjtj/" target="_blank">数据统计</a></li>
+							
+							
+								<li class="bordernone"><a href="../../zy/ipsqzn/" target="_blank">IP申请指南</a></li>
+								
+						
+								
+							<li><a href="../../zy/flfg/" target="_blank">政策法规</a></li>
+							
+							
+								<li class="bordernone"><a href="../../zy/wzdh/" target="_blank">IP导航</a></li>
+								
+						
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<!--
+                	作者：高山峰
+                	时间：2020-12-07
+                	描述：屏蔽检索框
+                
+				<div class="searchbtn fr">
+					<span class="wordS">搜索</span>
+					<span class="pngS"><img src="../../images/tripleS.png" /></span>					
+				</div>
+				-->
+				<div class="search_container" style="display: none;">
+					<div class="content search_content mCustomScrollbar" data-mcs-theme="minimal">	
+						<form class="search_area" action="http://s.cnipr.com/was5/web/search" method="get" name="outlinesearchform2" target="_blank">
+							<input type="text" name="searchword" id="" value="" placeholder="挖掘你感兴趣的知产资讯" />
+							<input type="hidden" name="channelid" value="230978" />		
+							<div class="search_areabtn" ><img src="../../images/searchareabtn.png" onClick="checksearchword_test();" /></div>
+							<div class="search_areabtnH"><a href="http://s.cnipr.com/was5/web/advanced.jsp?channelid=230978" target="_blank">高级搜索</a></div>
+						</form>
+						<div class="search_box clearfix">						
+							<div class="search_boxes">
+								<h1>近期活跃事件</h1>
+								<div class="hytip_box clearfix">
+									<a href="http://www.cnipr.com/xy/spzq/hyhd/201909/t20190918_235278.html" target="_blank">2019第五届“中知在线”杯知识产权运营大赛暨知识产权投融资圆桌会议专题报道</a><a href="http://www.cnipr.com/xy/spzq/ipdks/szzt/dah/hy/" target="_blank">【特别策划】知识产权数字展馆——触摸知识产权 VR真实体验</a><a href="http://www.cnipr.com/sj/zx/201904/t20190424_232278.html" target="_blank">【特别策划】中国知识产权网首期《知识产权鼎谈》——奥运会知识产权保护</a><a href="http://www.cnipr.com/xy/spzq/ipdks/201909/t20190930_235545.html" target="_blank">京东集团知识产权工作介绍</a><a href="../../sy/jqhysj/201910/t20191016_235848.html" target="_blank">第二十一届中国专利奖评审结果公示</a><a href="../../sy/jqhysj/201910/t20191016_235847.html" target="_blank">中国（滨海新区）知识产权保护中心正式成立</a>
+								</div>
+								<div class="hybtm">
+									<a target="_blank" href="../../sy/jqhysj/" class="sjphb">事件排行榜</a>
+								</div>							
+							</div>
+							<div class="search_boxes">
+								<h1>大家都在搜</h1>
+								<div class="djdzs clearfix">
+									<a href="http://s.cnipr.com/was5/web/search?searchword=专利&channelid=230978" target="_blank">[专利]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=商标&channelid=230978" target="_blank">[商标]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=版权&channelid=230978" target="_blank">[版权]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=地理标志&channelid=230978" target="_blank">[地理标志]</a>
+									
+									<a href="http://s.cnipr.com/was5/web/search?searchword=中国知识产权年会&channelid=230978" target="_blank">[中国知识产权年会]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=知识产权&channelid=230978" target="_blank">[知识产权]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=行政执法&channelid=230978" target="_blank">[行政执法]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=侵权&channelid=230978" target="_blank">[侵权]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=IPO&channelid=230978" target="_blank">[IPO]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=专利周&channelid=230978" target="_blank">[专利周]</a>									
+									<a href="http://s.cnipr.com/was5/web/search?searchword=发明&channelid=230978" target="_blank">[发明]</a>									
+									<a href="http://s.cnipr.com/was5/web/search?searchword=创新&channelid=230978" target="_blank">[创新]</a>									
+									<a href="http://s.cnipr.com/was5/web/search?searchword=创造&channelid=230978" target="_blank">[创造]</a>									
+									<a href="http://s.cnipr.com/was5/web/search?searchword=研发&channelid=230978" target="_blank">[研发]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=成果转化&channelid=230978" target="_blank">[成果转化]</a>
+									<a href="http://s.cnipr.com/was5/web/search?searchword=核心技术&channelid=230978" target="_blank">[核心技术]</a>
+								</div>
+								<div class="hybtm">
+									<a href="http://s.cnipr.com/was5/web/search?channelid=230978" target="_blank" class="sjphb">更多标签</a>
+								</div>			
+							</div>
+							<div class="search_boxes" style="margin-right: 0;">
+								<h1>大家都在用</h1>
+								<div class="anli_listBox">
+								
+									<div class="anli_list">
+										<h2><a href="http://iptranslation.net/pageJump/mainpage.do" target="_blank">科专笑飞专利文献机器翻译系统</a></h2>
+										
+									</div>
+								
+									<div class="anli_list">
+										<h2><a href="/fw/cpfw/2017fuwu/xxfwizk/" target="_blank">i智库——知识产权咨询与培训服务平台</a></h2>
+										
+									</div>
+								
+									<div class="anli_list">
+										<h2><a href="/fw/cpfw/chanpin/Iyizscqyyfw/" target="_blank">I译+知识产权语言服务平台</a></h2>
+										
+										<a target="_blank" href="../../wdcnipr/qtcs/yc/sj/hd/px/201711/t20171101_222636.html">
+											<p>WIP公开课第六季名师见面会-日文专利文献翻译实例介绍（电学领域）的课程分享会</p>
+										</a>
+										
+									</div>
+								
+								</div>
+								<div class="hybtm">
+									<a target="_blank" href="../../fw/" class="sjphb">更多服务案例</a>
+								</div>		
+							</div>
+						</div>
+						<div class="search_boxbtm">
+							<div class="closesearch"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<form action="http://s.cnipr.com/was5/web/search" method="get" name="outlinesearchform3" target="_blank" id="outlinesearchform3">
+		<input type="hidden" name="searchword" id="searchword" value="" placeholder="" />
+		<input type="hidden" name="channelid" id="channelid" value="230978" />		
+</form>
+			<!--头部嵌套-->
+		</header>
+		<!--<section class="clearfix">-->
+			<div class="left_phone_nav zx_left_nav">
+				<div class="zx_leftnav_tab">
+					<div class="hd">
+						<ul class="leftnav_tab_hd clearfix leftnav_phone_hd">
+							<li class="fl"><a href="../szyw/">时政要闻</a></li>
+							<li class="fl current"><a href="./">新闻资讯</a></li>
+							<li class="fl"><a href="../ft/">专家访谈</a></li>
+							<li class="fl"><a href="../gg/">通知公告</a></li>
+							<li class="fl"><a href="../al/">案例解读</a></li>
+							<li class="fl"><a href="../zt/">专题专栏</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="left_nav zx_left_nav">
+				<p class="zx_leftnav_title">视  角</p>
+				<div class="zx_leftnav_tab">
+					<div class="hd">
+						<ul class="leftnav_tab_hd">
+							<li><a href="../szyw/">时政要闻</a></li>
+							<li class="current"><a href="./">新闻资讯</a></li>
+							<li><a href="../ft/">专家访谈</a></li>
+							<li><a href="../gg/">通知公告</a></li>
+							<li><a href="../al/">案例解读</a></li>
+							<li><a href="../zt/">专题专栏</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<div>
+				<div class="shijiao_mian">
+					<div class="zx_main" style="display: block;">
+						<div class="zx_main_position">
+							<span>当前位置：<a href="../../" title="首页" class="CurrChnlCls">首页</a><a href='javascript:;'>&nbsp;>&nbsp;</a><a href="../" title="视角" class="CurrChnlCls">视角</a><a href='javascript:;'>&nbsp;>&nbsp;</a><a href="./" title="新闻资讯" class="CurrChnlCls">新闻资讯</a></span>
+						</div>
+						<div class="zx_cont_tab slideTxtBox">
+							<!--<div class="hd">
+								<ul class="clearfix">
+									<li class="fl on">最新</li>									
+								</ul>
+							</div>-->
+							<div class="bd">
+							
+						       
+								<ul>	
+								
+								
+						         <div style="display:none">
+						          1
+						        </div>
+								
+								
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260408_259472.html"><p class="list1_title">我国企业发明专利产业化率达到54%</p></a>
+											<p class="list1_zhaiyao">国家知识产权局于4月1日发布《2025年中国专利调查报告》。调查显示，我国企业在专利产出和专利转化运用中的主体地位进一步凸显。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260408_259472.html"><img src="./202604/W020260408383927989801.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='1' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-08</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259472yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259472gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259472dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259472sc'>收藏</span></div>-->
+											<div class="tips">中国专利调查报告</div>
+
+											<div class="tips">专利产业化</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260408_259471.html"><p class="list1_title">2026年全国知识产权宣传周活动将于4月20日至26日组织开展</p></a>
+											<p class="list1_zhaiyao">为推进知识产权强国建设，全国知识产权宣传周活动组委会决定，于2026年4月20日至26日，组织开展2026年全国知识产权宣传周活动。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260408_259471.html"><img src="./202604/W020260408492493686769.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='2' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-08</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259471yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259471gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259471dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259471sc'>收藏</span></div>-->
+											<div class="tips">2026年</div>
+
+											<div class="tips">全国知识产权宣传周</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260403_259463.html"><p class="list1_title">河北出台18项措施助力光伏产业健康发展</p></a>
+											<p class="list1_zhaiyao">为深入贯彻落实国家关于光伏产业知识产权保护工作部署，充分发挥知识产权保护和激励创新的价值功能，河北制定出台八方面18项务实举措，以全链条知识产权保护推动光伏产业向高端化、智能化、绿色化转型升级。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260403_259463.html"><img src="./202604/W020260403349755698867.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='3' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-03</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259463yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259463gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259463dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259463sc'>收藏</span></div>-->
+											<div class="tips">知识产权保护</div>
+
+											<div class="tips">光伏产业</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260402_259461.html"><p class="list1_title">中国国家知识产权局与芬兰专利与注册局启动“中芬联络员机制”试点项目</p></a>
+											<p class="list1_zhaiyao">为了更好地服务中芬经贸交往，协助解决两国企业用户在对方国家知识产权方面的问题及关切，中国国家知识产权局与芬兰专利与注册局经磋商一致，决定联合开展“中芬联络员机制”试点项目。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260402_259461.html"><img src="./202604/W020260402591144051928.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='4' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-02</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259461yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259461gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259461dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259461sc'>收藏</span></div>-->
+											<div class="tips">知识产权</div>
+
+											<div class="tips">试点项目</div>
+											
+										</div>
+									</li>
+									
+									
+									
+									
+									<li class="zx_cont_list3 clearfix">
+										<a target="_blank" href="http://tscope.cnipr.com/" class="fl"><img src="../../images/20210918a.jpg" /></a>
+										<a target="_blank" href="http://iptranslation.net/page/index.html" class="fr"><img src="../../images/20210918b.jpg" /></a>
+									</li>
+                                  
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260402_259460.html"><p class="list1_title">中国国家知识产权局与匈牙利知识产权局延长“中匈联络员机制”试点项目</p></a>
+											<p class="list1_zhaiyao">为进一步推动中匈两国知识产权领域合作，为双方企业提供持续、高效的知识产权服务，中国国家知识产权局和匈牙利知识产权局经磋商一致，决定将“中匈联络员机制”试点项目延长五年，自2026年4月1日至2031年3月31日。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260402_259460.html"><img src="./202604/W020260402572842914114.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='5' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-02</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259460yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259460gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259460dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259460sc'>收藏</span></div>-->
+											<div class="tips">知识产权</div>
+											<div class="tips">试点项目</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202604/t20260401_259447.html"><p class="list1_title">三部门牵头，2026年宣传周来了!</p></a>
+											<p class="list1_zhaiyao">为推进知识产权强国建设，在第26个世界知识产权日来临之际，全国知识产权宣传周活动组委会决定，于2026年4月20日至26日，组织开展主题为“加强新兴领域知识产权保护 加快新质生产力发展”的2026年全国知识产权宣传周活动。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202604/t20260401_259447.html"><img src="./202604/W020260401349057090765.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='6' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">04-01</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259447yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259447gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259447dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259447sc'>收藏</span></div>-->
+											<div class="tips">2026年</div>
+											<div class="tips">全国知识产权宣传周</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202603/t20260331_259441.html"><p class="list1_title">藤县获批建设国家级知识产权快速维权中心</p></a>
+											<p class="list1_zhaiyao">近日，国家知识产权局同意广西壮族自治区梧州市藤县开展国家级知识产权快速维权中心建设，未来将面向陶瓷产业开展知识产权快速维权工作，该中心为广西壮族自治区内首家获批建设的快速维权中心。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202603/t20260331_259441.html"><img src="./202603/W020260331398068983026.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='7' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">03-31</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259441yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259441gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259441dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259441sc'>收藏</span></div>-->
+											<div class="tips">知识产权</div>
+											<div class="tips">快速维权中心</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202603/t20260330_259439.html"><p class="list1_title">赣州南康获批建设国家级知识产权快速维权中心</p></a>
+											<p class="list1_zhaiyao">近日，国家知识产权局同意江西省赣州市南康区开展国家级知识产权快速维权中心建设，未来将面向家居产业开展知识产权快速维权工作，该中心为江西省内首家获批建设的快速维权中心。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202603/t20260330_259439.html"><img src="./202603/W020260330517399465249.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='8' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">03-30</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259439yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259439gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259439dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259439sc'>收藏</span></div>-->
+											<div class="tips">知识产权</div>
+											<div class="tips">快速维权中心</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202603/t20260327_259430.html"><p class="list1_title">申长雨同世界知识产权组织总干事邓鸿森举行双边会谈</p></a>
+											<p class="list1_zhaiyao">近日，中国国家知识产权局局长申长雨与来访的世界知识产权组织（WIPO）总干事邓鸿森举行双边会谈，就知识产权领域最新发展情况、加强技术与创新支持中心合作等议题进行深入交流。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202603/t20260327_259430.html"><img src="./202603/W020260327402535947242.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='9' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">03-26</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259430yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259430gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259430dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259430sc'>收藏</span></div>-->
+											<div class="tips">知识产权</div>
+											<div class="tips">交流合作</div>
+											
+										</div>
+									</li>
+									
+									
+									
+								   
+									<li class="zx_cont_list1 clearfix">
+									<input type="hidden" name="chanlname" value='新闻资讯' />
+										<div class="list1_l fl">
+											<a target="_blank" href="./202603/t20260327_259429.html"><p class="list1_title">知识产权系统政务工作会议在京召开</p></a>
+											<p class="list1_zhaiyao">3月20日，2026年知识产权系统政务工作会议在京召开。</p>
+											
+										</div>
+										<div class="list1_r fr"><a target="_blank" href="./202603/t20260327_259429.html"><img src="./202603/W020260327402245574777.jpg" /></a></div>
+										<div class="clear"></div>
+										<div id='10' class="type1_btm clearfix list1_dongtai">
+											<div class="time list1_dongtai_time">03-27</div>
+											<div class="yuedu"><img src="../../images/yuedu.png" /><span id='259429yd'>阅读：687</span></div>
+											<!--<div class="guandian"><img src="../../images/guandian.png" /><span id='259429gd'>观点：6</span></div>
+												<div class="dianzan"><img src="../../images/dianzan.png" /><span id='259429dz'>点赞：234</span></div>
+											<div class="shoucang"><img src="../../images/shoucang.png" /><span id='259429sc'>收藏</span></div>-->
+											<div class="tips">知识产权系统</div>
+											<div class="tips">工作会议</div>
+											
+										</div>
+									</li>
+									
+									
+									
+									
+									
+									<li>
+										
+									</li>
+									
+								</ul>
+								
+								
+								
+</div>
+<style type="text/css">
+/*翻页*/
+.zscq_page{width:100%;margin: 70px auto;text-align: center;}
+.page_list{margin:0 auto;display: inline-block;}
+.page_list li{width:28px;height:28px;line-height: 28px;text-align: center;font-size: 14px;color:#515151;margin-left: 10px;border: 1px solid #e5e5e5;border-radius: 2px;margin-bottom: 5px;}
+.page_list li a{font-size: 14px;color:#999999;}
+.page_list li.current{border: 1px solid #77ade3;border-radius: 2px;}
+.page_list li.current a{color:#77ade3;}
+.page_list li.noBord{border: 0;}
+.page_list li.page_prv a{ background:none;display: block;width: 100%;height: 100%; }
+.page_list li.page_next a{ background:none;display: block;width: 100%;height: 100%;}
+.page_list li.page_prv.current a{ background:none;display: block;width: 100%;height: 100%;}
+.page_list li.page_next.current a{ background:none;display: block;width: 100%;height: 100%;}
+.tiaozhuan{display: inline-block;margin-bottom: 5px;}
+.tiaozhuan_t{font-size: 14px;color: #999999;padding-left: 15px;line-height: 26px;}
+.tianzhuan_p{width:44px;height: 26px;line-height: 26px;text-align: center;border: 1px solid #e5e5e5;margin-right: 10px;color: #77ade3;}
+.tiaozhuan_btn{width:26px;height: 26px;line-height: 26px;text-align: center;border: 1px solid #e5e5e5;font-size: 14px;color: #515151;}
+.tiaozhuan a.current{color: #77ade3;border: 1px solid #77ade3;border-radius: 2px;}
+</style>
+<li>
+										<div class="zscq_page clearfix">
+												<script>
+                    var currentPage = 0;//所在页从0开始
+                    var prevPage = currentPage-1//上一页
+                    var nextPage = currentPage+1//下一页
+                    var countPage = 50//共多少页
+                    //var record_count = 1;
+                    //document.write("共有"+record_count+"条&nbsp;&nbsp;分"+countPage+"页显示&nbsp;&nbsp;");
+					document.write("<ul class=\"page_list clearfix\">");
+					if(countPage>1){
+						//document.write("共"+countPage+"页&nbsp;&nbsp;");
+						//设置上一页代码
+						if(currentPage!=0&&currentPage!=1)
+							document.write("<li class=\"fl page_prv\"><a href=\"index"+"_" + prevPage + "."+"html\">&lt;</a></li>");
+						else if(currentPage!=0&&currentPage==1)
+							document.write("<li class=\"fl page_prv\"><a href=\"index.html\">&lt;</a></li>");
+						else
+							document.write("<li class=\"fl page_prv\"><a href=\"jvascript:;\">&lt;</a></li>");
+						//循环
+						var num = 5;
+						for(var i=0+(currentPage-1-(currentPage-1)%num) ; i<=(num+(currentPage-1-(currentPage-1)%num))&&(i<countPage) ; i++){
+							if(currentPage==i)
+								document.write("<li class=\"fl current\"><a href=\"jvascript:;\">"+(i+1)+"</a></li>");
+							else if(i==0)
+								document.write("<li class=\"fl\"><a href=\"index.html\">"+(i+1)+"</a></li>");
+							else
+								document.write("<li class=\"fl\"><a href=\"index"+"_" + i + "."+"html\">"+(i+1)+"</a></li>");
+						}
+
+						//设置下一页代码 
+						if(currentPage!=(countPage-1))
+							document.write("<li class=\"fl page_next\"><a href=\"index"+"_" + nextPage + "."+"html\">&gt;</a></li>");
+						else if(currentPage==(countPage-1))
+							document.write("<li class=\"fl page_next\"><a href=\"jvascript:;\">&gt;</a></li>");
+						
+						document.write("</ul>");
+						
+						//跳转页面
+						document.write("<div class=\"tiaozhuan clearfix\">");
+						document.write("<span class=\"tiaozhuan_t fl\">跳转到：</span><input type='text' id='num' value="+(currentPage+1)+" class='tianzhuan_p fl' />"+
+											 "<input class='tiaozhuan_btn fl' style='background-color:#FFFFFF' type='submit' value='GO' onClick=javacript:toPage() />");
+						document.write("</div>");
+					}
+                    	             
+                    function toPage(){
+	                    var _num = document.getElementById("num").value;
+	                    if(isNaN(_num)){
+		                    alert("请输入数字");
+		                    return false;
+	                    }
+	                    var str = "index"+"_"+(_num-1)+"."+"html";
+	                    var url = location.href.substring(0,location.href.lastIndexOf("/")+1);
+	                    if(_num<=1||_num==null)
+		                    location.href = url+"index"+"."+"html";
+	                    else if(_num>countPage)
+		                    alert("本频道最多"+countPage+"页");
+	                    else
+		                    location.href = url+str;
+                    }
+                    </script>
+										</div>
+									</li>
+						</div>
+					</div>
+				</div>
+			</div>	
+			<div class="right_phone_tips">
+				<div style="display: block;">
+					<div class="zx_gonggao">
+						<div class="gonggao_title clearfix">
+							<p class="gonggao_txt fl">专家访谈</p>
+							<a target="_blank" href="../ft/" class="morebtn color_b fr">更多></a>
+						</div>
+						<ul class="zx_gonggao_list">
+						
+							<li><a target="_blank" href="../ft/202601/t20260106_259177.html"><p class="gonggao_list_txt">【原创】人工智能赋能知识产权全链条实践探索与未来前景</p><p class="gonggao_list_time">2026-01-06</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202510/t20251012_258714.html"><p class="gonggao_list_txt">【原创】从品牌赋能到知识产权维权：知识产权为跨境电商“出海”保驾护航</p><p class="gonggao_list_time">2025-10-12</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202509/t20250929_258673.html"><p class="gonggao_list_txt">【原创】护航企业“出海”，知识产权风险这样破</p><p class="gonggao_list_time">2025-09-29</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202508/t20250806_258296.html"><p class="gonggao_list_txt">【原创】聚焦数据知识产权保护 助力新质生产力发展</p><p class="gonggao_list_time">2025-08-06</p></a></li>
+							
+						</ul>
+					</div>
+					<div class="border_repeat"></div>
+					<div class="zx_zcjd">
+						<a target="_blank" href="../al/"><img width="285" height="168" src="../../images/zx_zcjd_pic20210209.jpg" /></a>
+					</div>
+					<div class="border_repeat"></div>
+					<div class="zx_zkgd">
+						<div class="zkgd_title clearfix">
+							<p class="zkgd_txt fl">i智库观点 </p>
+							<a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/" class="morebtn color_b fr">更多></a>
+						</div>
+						
+						
+						<a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/202001/t20200110_237304.html" class="zx_zkgd_pic clearfix">
+						
+							<img width="114" height="81" src="../../wdcnipr/qtcs/yc/sj/izkgd/202001/W020200110589083081586.jpg" class="fl" />
+							<div class="zkgd_pic_txt fl">《中国互联网云技术专利分析报告》发布</div>
+						</a>
+							
+						<a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201807/t20180719_227503.html" class="zx_zkgd_pic clearfix">
+						
+							<img width="114" height="81" src="../../wdcnipr/qtcs/yc/sj/izkgd/201807/W020180719525797469494.png" class="fl" />
+							<div class="zkgd_pic_txt fl">高新技术企业认定对知识产权的要求及企业获取专利所有权的方法</div>
+						</a>
+							
+						<ul class="zx_zkgd_list">
+						
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201807/t20180719_227502.html"><p class="zkgd_list_txt">浅谈非专利文献检索中的策略</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219118.html"><p class="zkgd_list_txt">董明珠的新能源汽车梦</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219117.html"><p class="zkgd_list_txt">【智库观察】近五年中国专利转移状况简析</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219116.html"><p class="zkgd_list_txt">【图解专利】一幅图带您了解专利资产证券化</p></a></li>
+							
+						</ul>
+						
+					</div>
+					
+					<!--
+					<div class="border_repeat"></div>
+					<div class="zx_zkfyb">
+						<div class="zkfyb_title clearfix">
+							<p class="zkfyb_txt fl">智库风云榜</p>
+							<a target="_blank" href="" class="morebtn color_g fr">更多></a>
+						</div>
+						<ul class="zkfyb_list">
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p1.jpg" /></a></li>
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p2.jpg" /></a></li>
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p3.jpg" /></a></li>
+						</ul>
+					</div>
+					-->
+					
+					
+					<div class="border_repeat"></div>
+					<div class="zx_houdong">
+						<div class="houdong_title clearfix">
+							<p class="houdong_txt fl">通知公告</p>
+							<a target="_blank" href="../gg/" class="morebtn color_b fr">更多></a>
+						</div>
+						
+						<a target="_blank" href="../gg/202604/t20260403_259467.html" class="zx_zkgd_pic clearfix">
+							<img src="../gg/202604/W020260403517660685363.jpg" class="fl" />
+							<div class="zkgd_pic_txt fl">关于知识产权公共数据授权运营平台正式上线运行的通知<br />国家知识产权局发布关于知识产权公共数据授权运营平台正式上线运行的通知。</div>
+						</a>
+						
+						<a target="_blank" href="../gg/202603/t20260327_259422.html" class="zx_zkgd_pic clearfix">
+							<img src="../gg/202603/W020260327400925056044.jpg" class="fl" />
+							<div class="zkgd_pic_txt fl">关于专利局呼和浩特代办处专利费用收缴账户变更的公告（第672号）<br />国家知识产权局发布关于专利局呼和浩特代办处专利费用收缴账户变更的公告。</div>
+						</a>
+						
+						<ul class="zx_zkgd_list">
+						
+							<li><a target="_blank" href="../gg/202603/t20260327_259422.html"><p class="zkgd_list_txt">关于专利局呼和浩特代办处专利费用收缴账户变更的公告（第672号）</p></a></li>
+						</ul>
+						<div class="huodong_detalis">
+							国家知识产权局发布关于专利局呼和浩特代办处专利费用收缴账户变更的公告。
+						</div>
+						
+						<!--不是固定内容 -->
+					</div>
+					<div class="border_repeat"></div>
+					<div class="zx_zhuanti">
+						<div class="zhuanti_title clearfix">
+							<p class="zhuanti_txt fl">专题</p>
+							<a target="_blank" href="../zt/" class="morebtn color_g fr">更多></a>
+						</div>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2025/" class="zhuanti_pic clearfix">												
+							<img src="../zt/202504/W020250418543721341362.jpg" width="114px" height="76" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2025年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2025年全国知识产权宣传周活动于４月20日启幕，今年宣传周活动的主题为“知识产权与人工智能”。</p>
+							</div>
+						</a>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2024/" class="zhuanti_pic clearfix">												
+							<img src="../zt/202404/W020240418491254660636.jpg" width="114px" height="76" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2024年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2024年全国知识产权宣传周活动于4月20日启幕，并持续至4月26日——第24个世界知识产权日。今年宣传周活动的主题是“知识产权转化运用促进高质量发展”。</p>
+							</div>
+						</a>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2023xcz/" class="zhuanti_pic clearfix">												
+							<img src="../zt/202304/W020230420414059443411.jpg" width="114px" height="76" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2023年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2023年全国知识产权宣传周活动于4月20日启幕，并持续至4月26日——第23个世界知识产权日。今年宣传周活动的主题是“加强知识产权法治保障 有力支持全面创新”。</p>
+							</div>
+						</a>
+						
+						
+					</div>
+					<div class="border_repeat"></div>
+					<div class="zx_youxiang">
+						<div class="zx_youxiang_cont">
+							<p class="youxiang_txt">欢迎投稿：tougao@cnipr.com</p>
+							<p class="tel_txt">投稿热线：010-82000860-8215</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--righttips结束-->
+			<div class="right_tips">
+				<div style="display: block;">
+					<div class="zx_gonggao">
+						<div class="gonggao_title clearfix">
+							<p class="gonggao_txt fl">专家访谈</p>
+							<a target="_blank" href="../ft/" class="morebtn color_b fr">更多></a>
+						</div>
+						<ul class="zx_gonggao_list">
+						
+							<li><a target="_blank" href="../ft/202601/t20260106_259177.html"><p class="gonggao_list_txt">【原创】人工智能赋能知识产权全链条实践探索与未来前景</p><p class="gonggao_list_time">2026-01-06</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202510/t20251012_258714.html"><p class="gonggao_list_txt">【原创】从品牌赋能到知识产权维权：知识产权为跨境电商“出海”保驾护航</p><p class="gonggao_list_time">2025-10-12</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202509/t20250929_258673.html"><p class="gonggao_list_txt">【原创】护航企业“出海”，知识产权风险这样破</p><p class="gonggao_list_time">2025-09-29</p></a></li>
+							
+							<li><a target="_blank" href="../ft/202508/t20250806_258296.html"><p class="gonggao_list_txt">【原创】聚焦数据知识产权保护 助力新质生产力发展</p><p class="gonggao_list_time">2025-08-06</p></a></li>
+							
+						</ul>
+					</div>
+					<div class="border_repeat"></div>
+					<div class="zx_zcjd">
+						<a target="_blank" href="../al/"><img width="285" height="168" src="../../images/zx_zcjd_pic20210209.jpg" /></a>
+					</div>
+					<!--
+					<div class="border_repeat"></div>
+					<div class="zx_zkgd">
+						<div class="zkgd_title clearfix">
+							<p class="zkgd_txt fl">i智库观点 </p>
+							<a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/" class="morebtn color_b fr">更多></a>
+						</div>
+						
+						<a target="_blank" href="javascript:;" class="zx_zkgd_pic clearfix">
+							<img width="114" height="81" src="../../wdcnipr/qtcs/yc/sj/izkgd/202001/W020200110589083081586.jpg" class="fl" />
+							<div class="zkgd_pic_txt fl">《中国互联网云技术专利分析报告》发布</div>
+						</a>
+						
+						<a target="_blank" href="javascript:;" class="zx_zkgd_pic clearfix">
+							<img width="114" height="81" src="../../wdcnipr/qtcs/yc/sj/izkgd/201807/W020180719525797469494.png" class="fl" />
+							<div class="zkgd_pic_txt fl">高新技术企业认定对知识产权的要求及企业获取专利所有权的方法</div>
+						</a>
+						
+						<ul class="zx_zkgd_list">
+						
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201807/t20180719_227502.html"><p class="zkgd_list_txt">浅谈非专利文献检索中的策略</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219118.html"><p class="zkgd_list_txt">董明珠的新能源汽车梦</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219117.html"><p class="zkgd_list_txt">【智库观察】近五年中国专利转移状况简析</p></a></li>
+							
+							<li><a target="_blank" href="../../wdcnipr/qtcs/yc/sj/izkgd/201707/t20170725_219116.html"><p class="zkgd_list_txt">【图解专利】一幅图带您了解专利资产证券化</p></a></li>
+							
+						</ul>
+					</div>
+					
+					<div class="border_repeat"></div>
+					<div class="zx_zkfyb">
+						<div class="zkfyb_title clearfix">
+							<p class="zkfyb_txt fl">智库风云榜</p>
+							<a target="_blank" href="http://www.ipzhiku.com/rank/toRank" class="morebtn color_g fr">更多></a>
+						</div>
+						<ul class="zkfyb_list">
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p1.jpg" /></a></li>
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p2.jpg" /></a></li>
+							<li><a target="_blank" href="http://www.ipzhiku.com/rank/toRank"><img width="284" height="100" src="../../images/zkfyb_list_p3.jpg" /></a></li>
+						</ul>
+					</div>
+					-->
+					
+					
+					<div class="border_repeat"></div>
+					<div class="zx_houdong">
+						<div class="houdong_title clearfix">
+							<p class="houdong_txt fl">通知公告</p>
+							<a target="_blank" href="../gg/" class="morebtn color_b fr">更多></a>
+						</div>
+						
+						
+						<ul class="zx_gonggao_list">
+						
+							<li><a target="_blank" href="../gg/202604/t20260403_259467.html"><p class="gonggao_list_txt">关于知识产权公共数据授权运营平台正式上线运行的通知</p><p class="gonggao_list_time">2026-04-03</p></a></li>
+							
+							<li><a target="_blank" href="../gg/202603/t20260327_259422.html"><p class="gonggao_list_txt">关于专利局呼和浩特代办处专利费用收缴账户变更的公告（第672号）</p><p class="gonggao_list_time">2026-03-27</p></a></li>
+							
+							<li><a target="_blank" href="../gg/202603/t20260316_259384.html"><p class="gonggao_list_txt">国家知识产权局关于核准山西金漫园果业有限责任公司等217家企业使用地理标志专用标志的公告（第671号）</p><p class="gonggao_list_time">2026-03-16</p></a></li>
+							
+							<li><a target="_blank" href="../gg/202603/t20260311_259372.html"><p class="gonggao_list_txt">国家知识产权局办公室关于印发《知识产权信息分析利用指南》的通知</p><p class="gonggao_list_time">2026-03-11</p></a></li>
+							
+						</ul>
+						
+						
+					</div>
+					<div class="zx_zhuanti">
+						<div class="zhuanti_title clearfix">
+							<p class="zhuanti_txt fl">专题</p>
+							<a target="_blank" href="../zt/" class="morebtn color_g fr">更多></a>
+						</div>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2025/" class="zhuanti_pic clearfix">												
+							<img width="114px" height="76" src="../zt/202504/W020250418543721341362.jpg" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2025年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2025年全国知识产权宣传周活动于４月20日启幕，今年宣传周活动的主题为“知识产权与人工智能”。</p>
+							</div>
+						</a>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2024/" class="zhuanti_pic clearfix">												
+							<img width="114px" height="76" src="../zt/202404/W020240418491254660636.jpg" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2024年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2024年全国知识产权宣传周活动于4月20日启幕，并持续至4月26日——第24个世界知识产权日。今年宣传周活动的主题是“知识产权转化运用促进高质量发展”。</p>
+							</div>
+						</a>
+						
+						<a target="_blank" href="http://www.cnipr.com/sj/zt/ndds/2023xcz/" class="zhuanti_pic clearfix">												
+							<img width="114px" height="76" src="../zt/202304/W020230420414059443411.jpg" class="fl" />														
+							<div class="zhuanti_pic_txt fl">
+								<p class="zhuanti_list_title">2023年全国知识产权宣传周</p>
+								<p class="zhuanti_list_txt">2023年全国知识产权宣传周活动于4月20日启幕，并持续至4月26日——第23个世界知识产权日。今年宣传周活动的主题是“加强知识产权法治保障 有力支持全面创新”。</p>
+							</div>
+						</a>
+						
+						
+					</div>
+					<div class="zx_youxiang" style="height:50px; margin-bottom:0px; display:block;">
+					<div class="zx_youxiang_cont">
+						<p class="tel_txt" style="font-size:13px">视频合作：010-82000860-8575/8525</p>
+					</div>
+				</div>
+				</div>
+			</div>
+				<!--righttips结束-->
+		<!--</section>-->
+		<!--底部导航-->
+		<meta name="format-detection" content="telephone=no">
+<style>
+	.footerBtm>div{ text-indent: 0px;}
+	.ftlogo{ text-align: center;}
+	.ftname{ text-align: center;}
+	.ftcopyright{ text-align: left;}
+</style>
+<footer class="clearfix">
+			<div class="footer clearfix">
+				<div class="footerTop">
+					<ul class="footerlink clearfix">
+						<li><a target="_blank" href="../../sy/db/gywm/201708/t20170814_219969.html">关于我们</a></li>
+						<li><a target="_blank" href="../../sy/db/lxwm/201708/t20170814_219971.html">联系我们</a></li>
+						<li><a target="_blank" href="../../sy/db/gghz/201708/t20170829_220703.html">广告合作</a></li>
+						<li><a target="_blank" href="../../sy/db/wzdt/">网站地图</a></li>
+						<li class="bordernone"><a target="_blank" href="../../sy/db/wzsm/201708/t20170817_220020.html">网站声明</a></li>
+					</ul>
+					<div class="footer_line"></div>					
+				</div>
+				<div class="footerMid clearfix" style="padding-left: 50px;">
+					<!--<div class="ywTel">IT运维电话：<span>4001880860</span></div>--->
+					<div class="kfmail" style="margin-left: 200px;">Email：<span>webmaster@cnipr.com</span></div>
+					<div class="wzTel">网站编辑部：<span>010-82000860-8215&frasl;8720&nbsp;</span></div>
+				</div>
+				
+				
+				
+				<div class="footerBtm clearfix" style="margin-top: 30px; padding-left: 50px;">
+					<div class="ftlogo"><a href="http://www.ipph.cn/" target="_blank"><img src="../../images/footerlogo.png" /></a></div>
+					
+					<div class="ftcopyright" style="width: 60%;">
+						<p class="phelf">主办单位：知识产权出版社有限责任公司</p>
+						<p class="phelf">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版权所有：知识产权出版社有限责任公司</p>
+						<p style="float: left;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802025098" >
+							<img src="../../images/logo_ga.png" style="" />
+							<font color="#FFFFFF">京公网安备 11010802025098号&nbsp;&nbsp;</font> 
+						</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;京ICP备09007110号-30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（署）网出证（京）字第 209 号  </p></div>
+				</div>
+				
+			</div>			
+		</footer>
+<!--易观 数据统计--->
+<div style="display: none;">
+	<script type="text/javascript" src="../../images/AnalysysAgent_JS_SDK.min.js"></script>
+</div>
+<!--易观 数据统计--->
+
+
+<script id="_trs_ta_js" src="//ta.trs.cn/c/js/ta.js?mpid=1240" async="async" defer="defer"></script>
+<!--CNZZ 站长统计--->
+<div style="display: none;">
+	<script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1277893124&web_id=1277893124"></script>
+</div>
+<!--CNZZ 站长统计--->
+		<!--底部导航-->
+		<script src="../../images/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../images/common.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../../images/jquery.SuperSlide.2.1.2.js"></script>
+		<script type="text/javascript" src="../../images/twoStage_common.js"></script>
+		<script type="text/javascript">
+			jQuery(".slideTxtBox").slide({});
+			$(function(){
+				$('.leftnav_tab_hd li').click(function(){
+					 $(this).addClass('current').siblings().removeClass('current');
+					 $(".shijiao_mian>div").eq($(this).index()).show().siblings().hide();
+					 console.log($(this).index())
+					 if($(this).index()==6){
+					 	$('.main').css({'width':'90%'});
+					 	$('.right_tips>div').hide();
+					 	$('.right_phone_tips>div').hide();
+					 	$('.right_tips').css({'paddingBottom':'0'})
+					 }else{
+					 	$('.main').css({'width':'65%'});
+					 	$('.right_tips').css({'paddingBottom':'135px'})
+					 };
+					 $('.right_tips>div').eq($(this).index()).show().siblings().hide();
+					 $('.right_phone_tips>div').eq($(this).index()).show().siblings().hide();
+				});
+				$('.syzt_cont_list li:nth-child(4n)').css({'marginRight':'0'})
+			})
+		</script>
+
+
+
+     <!--<script type='text/javascript' src='../../images/gs.js'></script> Gridsum monitor 20170911-->
+     
+	</body>
+</html>

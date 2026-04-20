@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安全隐患检查自动化系统 - 管理端</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --primary:#6366f1;--primary-hover:#4f46e5;--primary-light:#eef2ff;--primary-glow:rgba(99,102,241,.18);
+    --success:#10b981;--success-light:#ecfdf5;
+    --warning:#f59e0b;--warning-light:#fffbeb;
+    --danger:#ef4444;--danger-light:#fef2f2;
+    --surface:#ffffff;--bg:#f4f6fb;
+    --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+    --border:#e2e8f0;--border-light:#f1f5f9;
+    --radius:14px;--radius-sm:10px;
+    --shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);
+    --shadow-lg:0 4px 24px rgba(0,0,0,.06);
+    --shadow-xl:0 8px 40px rgba(0,0,0,.1);
+  }
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+  /* Sidebar */
+  .sidebar{width:260px;background:linear-gradient(180deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%);min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .sidebar::before{content:'';position:absolute;top:-60%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 60%);pointer-events:none}
+  .sidebar-logo{padding:28px 24px 20px;position:relative}
+  .sidebar-logo h1{color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;gap:10px;letter-spacing:-.3px}
+  .sidebar-logo h1 .logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#818cf8,#6366f1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,.4)}
+  .sidebar-logo h1 .logo-icon svg{width:20px;height:20px}
+  .sidebar-logo p{color:rgba(255,255,255,.35);font-size:11px;margin-top:4px;margin-left:46px;letter-spacing:.5px}
+  .sidebar-nav{flex:1;padding:8px 12px}
+  .sidebar-item{padding:11px 16px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;margin-bottom:2px;position:relative}
+  .sidebar-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+  .sidebar-item.active{background:rgba(99,102,241,.2);color:#fff;box-shadow:inset 0 0 0 1px rgba(99,102,241,.2)}
+  .sidebar-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:0 3px 3px 0;background:#818cf8}
+  .sidebar-item svg{width:18px;height:18px;flex-shrink:0;opacity:.7}
+  .sidebar-item.active svg{opacity:1}
+  .sidebar-footer{padding:16px;margin:12px;border-radius:var(--radius-sm);background:rgba(255,255,255,.05);backdrop-filter:blur(8px)}
+  .sidebar-footer .user{display:flex;align-items:center;gap:10px}
+  .sidebar-footer .avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#818cf8,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .sidebar-footer .name{color:rgba(255,255,255,.9);font-size:13px;font-weight:600}
+  .sidebar-footer .email{color:rgba(255,255,255,.35);font-size:11px}
+
+  /* Main */
+  .main{flex:1;padding:28px 32px;overflow-y:auto;height:100vh}
+  .page-header{margin-bottom:28px}
+  .page-header h2{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px}
+  .page-header p{color:var(--text3);font-size:14px;margin-top:4px}
+
+  /* Cards */
+  .card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border-light);transition:all .25s}
+  .card:hover{box-shadow:var(--shadow-lg)}
+
+  /* Stat Cards */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .stat-card{border-radius:var(--radius);padding:22px;position:relative;overflow:hidden;border:none}
+  .stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.15}
+  .stat-card.blue{background:linear-gradient(135deg,#eef2ff,#e0e7ff);color:#3730a3}
+  .stat-card.blue::before{background:#6366f1}
+  .stat-card.green{background:linear-gradient(135deg,#ecfdf5,#d1fae5);color:#065f46}
+  .stat-card.green::before{background:#10b981}
+  .stat-card.amber{background:linear-gradient(135deg,#fffbeb,#fef3c7);color:#92400e}
+  .stat-card.amber::before{background:#f59e0b}
+  .stat-card.rose{background:linear-gradient(135deg,#fff1f2,#fecdd3);color:#9f1239}
+  .stat-card.rose::before{background:#f43f5e}
+  .stat-card .stat-label{font-size:13px;font-weight:500;opacity:.7;margin-bottom:8px}
+  .stat-card .stat-num{font-size:36px;font-weight:800;line-height:1;letter-spacing:-1px}
+  .stat-card .stat-sub{font-size:12px;opacity:.5;margin-top:6px}
+  .stat-card .stat-icon{position:absolute;top:20px;right:20px;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.6);backdrop-filter:blur(4px)}
+  .stat-card .stat-icon svg{width:20px;height:20px}
+
+  /* Progress */
+  .progress{height:6px;border-radius:3px;background:var(--border);overflow:hidden}
+  .progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--primary),#a78bfa);transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+  /* Badge */
+  .badge{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.2px;display:inline-flex;align-items:center;gap:4px}
+  .badge::before{content:'';width:6px;height:6px;border-radius:50%}
+  .badge-done{background:#ecfdf5;color:#059669}.badge-done::before{background:#10b981}
+  .badge-progress{background:#eef2ff;color:#4f46e5}.badge-progress::before{background:#6366f1}
+  .badge-pending{background:#fffbeb;color:#b45309}.badge-pending::before{background:#f59e0b}
+
+  /* Buttons */
+  .btn{padding:9px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:6px;letter-spacing:.1px}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(99,102,241,.3)}
+  .btn-primary:hover{background:var(--primary-hover);box-shadow:0 4px 14px rgba(99,102,241,.4);transform:translateY(-1px)}
+  .btn-success{background:var(--success);color:#fff;box-shadow:0 2px 8px rgba(16,185,129,.3)}
+  .btn-success:hover{background:#059669;transform:translateY(-1px)}
+  .btn-outline{background:var(--surface);color:var(--text2);border:1.5px solid var(--border)}
+  .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+  .btn-ghost{background:transparent;color:var(--primary);padding:9px 12px}
+  .btn-ghost:hover{background:var(--primary-light)}
+
+  /* Table */
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  thead th{font-size:12px;font-weight:600;color:var(--text3);text-align:left;padding:12px 16px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+  tbody td{padding:14px 16px;font-size:13.5px;border-bottom:1px solid var(--border-light)}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:#f8fafc}
+  tbody tr:last-child td{border-bottom:none}
+
+  /* Upload Zone */
+  .upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:56px 32px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+  .upload-zone::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,.02),rgba(99,102,241,.06));opacity:0;transition:opacity .3s}
+  .upload-zone:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.08)}
+  .upload-zone:hover::before{opacity:1}
+  .upload-zone .upload-icon{width:72px;height:72px;margin:0 auto 20px;border-radius:20px;background:linear-gradient(135deg,var(--primary-light),#ddd6fe);display:flex;align-items:center;justify-content:center}
+  .upload-zone .upload-icon svg{width:32px;height:32px;color:var(--primary)}
+
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
+  .modal{background:var(--surface);border-radius:20px;max-width:920px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-xl);animation:scaleIn .25s cubic-bezier(.4,0,.2,1)}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+  /* Tab */
+  .tabs{display:flex;gap:4px;padding:4px;background:var(--border-light);border-radius:var(--radius-sm);width:fit-content;margin-bottom:20px}
+  .tab{padding:8px 20px;cursor:pointer;border-radius:8px;color:var(--text3);font-weight:600;font-size:13px;transition:all .2s}
+  .tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .tab:hover:not(.active){color:var(--text2)}
+
+  /* Photo Grid */
+  .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .photo-item{aspect-ratio:4/3;border-radius:var(--radius-sm);overflow:hidden;position:relative;cursor:pointer;transition:transform .2s}
+  .photo-item:hover{transform:scale(1.03)}
+  .photo-item .inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:500}
+  .photo-item .photo-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;padding:6px 10px;font-size:11px;font-weight:500}
+
+  /* Toast */
+  .toast{position:fixed;top:28px;right:28px;z-index:100;padding:14px 24px;border-radius:var(--radius-sm);color:#fff;font-weight:600;font-size:14px;box-shadow:var(--shadow-xl);animation:toastIn .35s cubic-bezier(.4,0,.2,1)}
+  @keyframes toastIn{from{opacity:0;transform:translateX(40px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+
+  /* Result stats */
+  .result-stat{border-radius:var(--radius-sm);padding:16px;text-align:center;position:relative;overflow:hidden}
+  .result-stat .rs-num{font-size:28px;font-weight:800;letter-spacing:-1px}
+  .result-stat .rs-label{font-size:11px;font-weight:500;opacity:.6;margin-top:2px}
+
+  /* Circular Progress */
+  .circle-stat{position:relative;width:120px;height:120px;margin:0 auto}
+  .circle-stat svg{transform:rotate(-90deg)}
+  .circle-stat .circle-bg{fill:none;stroke:var(--border);stroke-width:8}
+  .circle-stat .circle-fill{fill:none;stroke:url(#circleGrad);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+  .circle-stat .circle-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .circle-stat .circle-num{font-size:28px;font-weight:800;color:var(--primary);letter-spacing:-1px}
+  .circle-stat .circle-label{font-size:11px;color:var(--text3);font-weight:500}
+
+  /* Animated counter */
+  @keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .animate-in{animation:countUp .5s ease both}
+
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+  /* File row */
+  .file-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-sm);transition:background .15s}
+  .file-row:hover{background:var(--border-light)}
+  .file-row .file-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .file-row .file-info{flex:1;min-width:0}
+  .file-row .file-name{font-size:13.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .file-row .file-meta{font-size:12px;color:var(--text3);display:flex;gap:12px;margin-top:2px}
+</style>
+</head>
+<body>
+<svg style="position:absolute;width:0;height:0"><defs><linearGradient id="circleGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs></svg>
+
+<div style="display:flex">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h1>
+        <span class="logo-icon"><svg fill="none" stroke="#fff" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
+        安全检查系统
+      </h1>
+      <p>自动化文档生成平台</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item active" onclick="switchPage('dashboard')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm10 0a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
+        工作台
+      </div>
+      <div class="sidebar-item" onclick="switchPage('upload')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+        上传清单
+      </div>
+      <div class="sidebar-item" onclick="switchPage('projects')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        项目管理
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user">
+        <div class="avatar">管</div>
+        <div><div class="name">管理员</div><div class="email">admin@safety.gov</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main" id="mainContent"></div>
+</div>
+
+<div class="modal-overlay" id="projectModal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="projectModalContent"></div>
+</div>
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+const MP=[
+  {id:1,name:"湾区激光谷大厦项目",street:"观湖街道",address:"观城社区横坑水库西侧A909-1060宗地",contact:"李红",phone:"15937299381",category:"建筑施工",buildUnit:"深圳市杰普特光电股份有限公司",constructUnit:"广东电白建设集团有限公司",superviseUnit:"深圳市城建监理有限公司",checkDate:"2025-03-05",status:"done",hc:4,uc:4,
+    hazards:[{seq:1,type:"设备设施",desc:"脚手架横杆端头突出部分低于10cm",risk:"坍塌",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:2,type:"消防安全",desc:"临时用电线路未穿管保护",risk:"火灾",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:3,type:"安全防护",desc:"基坑边缘防护栏杆缺失",risk:"高处坠落",cat:"重大隐患",rs:"已整改",hp:1,rp:1},{seq:4,type:"安全管理",desc:"施工现场未设置安全警示标志",risk:"人员伤害",cat:"一般隐患",rs:"已整改",hp:1,rp:1}]},
+  {id:2,name:"小象超市冷库",street:"龙华街道",address:"共和农贸批发市场G15-G17位",contact:"黄浩磊",phone:"15012775845",category:"冷库",buildUnit:"",constructUnit:"",superviseUnit:"",checkDate:"2025-03-02",status:"done",hc:5,uc:5,
+    hazards:[{seq:1,type:"消防安全",desc:"货物占用安全疏散通道",risk:"疏散困难",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:2,type:"消防安全",desc:"消火栓、灭火器被遮挡",risk:"灭火延误",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:3,type:"安全管理",desc:"未张贴风险告知卡",risk:"人员不知风险",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:4,type:"电气安全",desc:"电线套管不全",risk:"触电/火灾",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:5,type:"消防安全",desc:"消火栓消防水带密封圈老化脱落",risk:"消防失效",cat:"一般隐患",rs:"已整改",hp:1,rp:1}]},
+  {id:3,name:"锦绣科学园二期项目",street:"观湖街道",address:"观城社区大和路南侧A816-0175宗地",contact:"张明",phone:"13800138003",category:"建筑施工",buildUnit:"深圳市锦绣科学园有限公司",constructUnit:"中建三局",superviseUnit:"深圳市华鹏监理有限公司",checkDate:"2025-03-10",status:"progress",hc:6,uc:3,
+    hazards:[{seq:1,type:"设备设施",desc:"塔吊基础螺栓松动",risk:"坍塌",cat:"重大隐患",rs:"已整改",hp:1,rp:1},{seq:2,type:"消防安全",desc:"施工材料堆放杂乱",risk:"火灾",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:3,type:"安全防护",desc:"临边防护不到位",risk:"高处坠落",cat:"一般隐患",rs:"已整改",hp:1,rp:1},{seq:4,type:"安全管理",desc:"工人未佩戴安全帽",risk:"物体打击",cat:"一般隐患",rs:"待整改",hp:1,rp:0},{seq:5,type:"电气安全",desc:"配电箱门未关闭",risk:"触电",cat:"一般隐患",rs:"待整改",hp:1,rp:0},{seq:6,type:"设备设施",desc:"脚手架连墙件不足",risk:"坍塌",cat:"重大隐患",rs:"待整改",hp:1,rp:0}]},
+  {id:4,name:"龙华文体中心项目",street:"龙华街道",address:"龙华大道北段东侧",contact:"王芳",phone:"13800138004",category:"建筑施工",buildUnit:"龙华区文体局",constructUnit:"中国建筑第二工程局",superviseUnit:"深圳市建星监理有限公司",checkDate:"2025-03-12",status:"pending",hc:3,uc:0,
+    hazards:[{seq:1,type:"消防安全",desc:"消防通道被围挡阻断",risk:"疏散困难",cat:"一般隐患",rs:"待整改",hp:1,rp:0},{seq:2,type:"安全防护",desc:"楼层边缘未设防护栏",risk:"高处坠落",cat:"重大隐患",rs:"待整改",hp:1,rp:0},{seq:3,type:"安全管理",desc:"未设置安全教育记录台账",risk:"管理缺失",cat:"一般隐患",rs:"待整改",hp:1,rp:0}]},
+  {id:5,name:"民治商业广场",street:"民治街道",address:"民治大道与民康路交汇处",contact:"刘伟",phone:"13800138005",category:"建筑施工",buildUnit:"深圳市民治实业有限公司",constructUnit:"华西建设集团",superviseUnit:"广东省建科监理有限公司",checkDate:"2025-03-15",status:"pending",hc:4,uc:0,
+    hazards:[{seq:1,type:"设备设施",desc:"升降机安全门损坏",risk:"坠落",cat:"重大隐患",rs:"待整改",hp:1,rp:0},{seq:2,type:"消防安全",desc:"动火作业未办理审批手续",risk:"火灾",cat:"一般隐患",rs:"待整改",hp:1,rp:0},{seq:3,type:"电气安全",desc:"临时用电未经验收",risk:"触电",cat:"一般隐患",rs:"待整改",hp:1,rp:0},{seq:4,type:"安全管理",desc:"无专职安全员巡查",risk:"管理缺失",cat:"一般隐患",rs:"待整改",hp:1,rp:0}]},
+];
+let curPage='dashboard';
+
+function switchPage(p){
+  curPage=p;
+  document.querySelectorAll('.sidebar-item').forEach((el,i)=>el.classList.toggle('active',['dashboard','upload','projects'][i]===p));
+  render();
+}
+
+function render(){
+  const c=document.getElementById('mainContent');
+  c.innerHTML={dashboard:rDash,upload:rUpload,projects:rProjects}[curPage]();
+}
+
+function rDash(){
+  const tot=MP.length,done=MP.filter(p=>p.status==='done').length,prog=MP.filter(p=>p.status==='progress').length,pend=MP.filter(p=>p.status==='pending').length;
+  const tH=MP.reduce((s,p)=>s+p.hc,0),tU=MP.reduce((s,p)=>s+p.uc,0);
+  const sts=[...new Set(MP.map(p=>p.street))];
+  const pct=Math.round(tU/tH*100);
+  const circ=2*Math.PI*52;
+  return `<div class="page-header"><h2>工作台</h2><p>安全隐患专项检查 — 数据总览</p></div>
+    <div class="stat-grid">
+      <div class="stat-card blue animate-in"><div class="stat-label">项目总数</div><div class="stat-num">${tot}</div><div class="stat-sub">${sts.length} 个街道</div><div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div></div>
+      <div class="stat-card green animate-in" style="animation-delay:.1s"><div class="stat-label">已完成</div><div class="stat-num">${done}</div><div class="stat-sub">可生成文档</div><div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div></div>
+      <div class="stat-card amber animate-in" style="animation-delay:.2s"><div class="stat-label">进行中</div><div class="stat-num">${prog}</div><div class="stat-sub">照片上传中</div><div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div></div>
+      <div class="stat-card rose animate-in" style="animation-delay:.3s"><div class="stat-label">待处理</div><div class="stat-num">${pend}</div><div class="stat-sub">未开始检查</div><div class="stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg></div></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px;color:var(--text)">各街道检查进度</h3>
+        ${sts.map(s=>{const ps=MP.filter(p=>p.street===s),d=ps.filter(p=>p.status==='done').length,pc=Math.round(d/ps.length*100);return`<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"><span style="width:72px;font-size:13px;font-weight:600;color:var(--text2);flex-shrink:0">${s}</span><div class="progress" style="flex:1"><div class="progress-fill" style="width:${pc}%"></div></div><span style="font-size:13px;font-weight:600;color:${pc===100?'var(--success)':'var(--text3)'};width:60px;text-align:right">${d}/${ps.length}</span></div>`}).join('')}
+      </div>
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px;color:var(--text);align-self:flex-start">照片上传</h3>
+        <div class="circle-stat">
+          <svg width="120" height="120" viewBox="0 0 120 120"><circle class="circle-bg" cx="60" cy="60" r="52"/><circle class="circle-fill" cx="60" cy="60" r="52" stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-pct/100)}"/></svg>
+          <div class="circle-text"><div class="circle-num">${pct}%</div><div class="circle-label">${tU}/${tH} 已上传</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="padding:24px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text)">最近项目</h3>
+      <table><thead><tr><th>项目名称</th><th>街道</th><th>状态</th><th>隐患</th><th>进度</th><th></th></tr></thead><tbody>
+      ${MP.map(p=>`<tr><td style="font-weight:600">${p.name}</td><td style="color:var(--text2)">${p.street}</td><td><span class="badge badge-${p.status==='done'?'done':p.status==='progress'?'progress':'pending'}">${p.status==='done'?'已完成':p.status==='progress'?'进行中':'待处理'}</span></td><td style="color:var(--text2)">${p.hc}</td><td><div style="display:flex;align-items:center;gap:10px"><div class="progress" style="width:80px"><div class="progress-fill" style="width:${Math.round(p.uc/p.hc*100)}%"></div></div><span style="font-size:12px;color:var(--text3);font-weight:600">${p.uc}/${p.hc}</span></div></td><td><button class="btn btn-ghost" onclick="showDetail(${p.id})">详情</button></td></tr>`).join('')}
+      </tbody></table>
+    </div>`;
+}
+
+function rUpload(){
+  return `<div class="page-header"><h2>上传隐患清单</h2><p>上传 Excel 格式的隐患问题清单，系统将自动解析项目信息和隐患数据</p></div>
+    <div class="card" style="padding:32px">
+      <div class="upload-zone" id="uploadZone" onclick="simUpload()" ondragover="event.preventDefault();this.style.borderColor='var(--primary)'" ondragleave="this.style.borderColor=''" ondrop="event.preventDefault();simUpload()">
+        <div class="upload-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
+        <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">点击上传 Excel 文件，或拖拽到这里</p>
+        <p style="font-size:13px;color:var(--text3)">支持 .xlsx 格式，文件不超过 50MB</p>
+      </div>
+    </div>
+    <div id="uploadResult" style="display:none" class="card" style="margin-top:16px">
+      <div style="padding:24px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--success-light);display:flex;align-items:center;justify-content:center"><svg style="width:22px;height:22px;color:var(--success)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div><h3 style="font-size:15px;font-weight:700">解析完成</h3><p style="font-size:12px;color:var(--text3)">附件：3月份建筑施工专项检查安全隐患问题清单.xlsx</p></div>
+      </div>
+      <div style="padding:20px 24px">
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="result-stat" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff)"><div class="rs-num" style="color:#4338ca">5</div><div class="rs-label" style="color:#6366f1">项目数</div></div>
+          <div class="result-stat" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)"><div class="rs-num" style="color:#047857">22</div><div class="rs-label" style="color:#10b981">隐患记录</div></div>
+          <div class="result-stat" style="background:linear-gradient(135deg,#faf5ff,#ede9fe)"><div class="rs-num" style="color:#7c3aed">22</div><div class="rs-label" style="color:#8b5cf6">隐患照片</div></div>
+          <div class="result-stat" style="background:linear-gradient(135deg,#fff7ed,#ffedd5)"><div class="rs-num" style="color:#c2410c">3</div><div class="rs-label" style="color:#f97316">街道</div></div>
+        </div>
+        <table><thead><tr><th>项目名称</th><th>街道</th><th>隐患数</th><th>照片数</th></tr></thead><tbody>${MP.map(p=>`<tr><td style="font-weight:600">${p.name}</td><td style="color:var(--text2)">${p.street}</td><td>${p.hc}</td><td>${p.hc}</td></tr>`).join('')}</tbody></table>
+        <div style="display:flex;gap:10px;margin-top:20px"><button class="btn btn-primary" onclick="showToast('数据已保存到数据库','success');switchPage('projects')">确认导入</button><button class="btn btn-outline">重新上传</button></div>
+      </div>
+    </div>
+    <div class="card" style="padding:24px;margin-top:16px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">上传历史</h3>
+      <div class="file-row">
+        <div class="file-icon" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5)"><svg style="width:20px;height:20px;color:var(--success)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        <div class="file-info"><div class="file-name">3月份建筑施工专项检查安全隐患问题清单.xlsx</div><div class="file-meta"><span>2025-03-01 09:30</span><span>5 个项目</span></div></div>
+        <span class="badge badge-done">已导入</span>
+      </div>
+    </div>`;
+}
+
+function rProjects(){
+  const dp=MP.filter(p=>p.status==='done');
+  return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px">
+      <div class="page-header" style="margin-bottom:0"><h2>项目管理</h2><p>管理所有检查项目、隐患记录与文档生成</p></div>
+      <div style="display:flex;gap:8px">
+        <select class="btn btn-outline"><option>全部街道</option><option>观湖街道</option><option>龙华街道</option><option>民治街道</option></select>
+        <select class="btn btn-outline"><option>全部状态</option><option>已完成</option><option>进行中</option><option>待处理</option></select>
+        <button class="btn btn-primary" onclick="batchGen()"><svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>批量生成 ZIP</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">${MP.map(p=>{const pc=Math.round(p.uc/p.hc*100);return`<div class="card" style="padding:22px;cursor:default">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div style="display:flex;align-items:flex-start;gap:14px;flex:1">
+          ${p.status==='done'?`<input type="checkbox" class="pcb" value="${p.id}" style="margin-top:6px;width:16px;height:16px;accent-color:var(--primary);cursor:pointer;flex-shrink:0">`:'<div style="width:16px;flex-shrink:0"></div>'}
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <h3 style="font-size:16px;font-weight:700">${p.name}</h3>
+              <span class="badge badge-${p.status==='done'?'done':p.status==='progress'?'progress':'pending'}">${p.status==='done'?'已完成':p.status==='progress'?'进行中':'待处理'}</span>
+              <span style="font-size:12px;color:var(--text3);font-weight:500;background:var(--border-light);padding:2px 8px;border-radius:6px">${p.category}</span>
+            </div>
+            <div style="display:flex;gap:20px;font-size:13px;color:var(--text3);margin-bottom:10px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:4px"><svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>${p.street} · ${p.address}</span>
+              <span>${p.contact}</span><span>${p.checkDate}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-size:12px;color:var(--text3);font-weight:500">隐患 ${p.hc} 条</span>
+              <span style="color:var(--border)">|</span>
+              <span style="font-size:12px;color:var(--text3);font-weight:500">照片 ${p.uc}/${p.hc}</span>
+              <div class="progress" style="width:100px"><div class="progress-fill" style="width:${pc}%"></div></div>
+              <span style="font-size:12px;font-weight:700;color:${pc===100?'var(--success)':'var(--text3)'}">${pc}%</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-left:16px">
+          <button class="btn btn-outline" onclick="showDetail(${p.id})">详情</button>
+          ${p.status==='done'?`<button class="btn btn-success" onclick="simGen(${p.id})"><svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>生成文档</button>`:''}
+        </div>
+      </div></div>`}).join('')}
+    </div>
+    <div class="card" style="padding:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h3 style="font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px"><svg style="width:18px;height:18px;color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>已生成文档 (2)</h3>
+        <span style="font-size:12px;color:var(--text3)">共 ${dp.length} 个项目可生成</span>
+      </div>
+      <div class="file-row">
+        <div class="file-icon" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff)"><svg style="width:20px;height:20px;color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        <div class="file-info"><div class="file-name">0039--龙华街道--小象超市冷库现场检查汇总记录（一企一档）.docx</div><div class="file-meta"><span>2025-03-02 15:30</span><span>712 KB</span></div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="showToast('下载开始','success')">下载</button><button class="btn btn-ghost" style="color:var(--danger)">删除</button></div>
+      </div>
+      <div class="file-row">
+        <div class="file-icon" style="background:linear-gradient(135deg,#eef2ff,#e0e7ff)"><svg style="width:20px;height:20px;color:var(--primary)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        <div class="file-info"><div class="file-name">0001--观湖街道--湾区激光谷大厦项目现场检查汇总记录（一企一档）.docx</div><div class="file-meta"><span>2025-03-05 16:20</span><span>856 KB</span></div></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="showToast('下载开始','success')">下载</button><button class="btn btn-ghost" style="color:var(--danger)">删除</button></div>
+      </div>
+    </div>`;
+}
+
+function showDetail(id){
+  const p=MP.find(x=>x.id===id);if(!p)return;
+  document.getElementById('projectModal').style.display='flex';
+  document.getElementById('projectModalContent').innerHTML=`
+    <div style="padding:28px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+        <div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.3px">${p.name}</h2><p style="font-size:13px;color:var(--text3);margin-top:4px">${p.street} · ${p.address}</p></div>
+        <button onclick="closeModal()" style="width:36px;height:36px;border-radius:10px;border:none;background:var(--border-light);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s" onmouseover="this.style.background='var(--danger-light)';this.style.color='var(--danger)'" onmouseout="this.style.background='var(--border-light)';this.style.color='inherit'">
+          <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px">
+        ${[['负责人',p.contact],['电话',p.phone],['检查日期',p.checkDate],...(p.buildUnit?[['建设单位',p.buildUnit]]:[]),...(p.constructUnit?[['施工单位',p.constructUnit]]:[]),...(p.superviseUnit?[['监理单位',p.superviseUnit]]:[])].map(([l,v])=>`<div style="padding:12px 14px;border-radius:var(--radius-sm);background:var(--border-light)"><div style="font-size:11px;color:var(--text3);font-weight:500;margin-bottom:2px">${l}</div><div style="font-size:13px;font-weight:600">${v}</div></div>`).join('')}
+      </div>
+      <div class="tabs"><div class="tab active" onclick="swTab(this,'hz-${p.id}')">隐患列表 (${p.hc})</div><div class="tab" onclick="swTab(this,'ph-${p.id}')">现场照片</div></div>
+      <div id="hz-${p.id}">
+        <table><thead><tr><th style="width:40px">序号</th><th>类型</th><th>隐患描述</th><th>风险</th><th>类别</th><th>隐患照片</th><th>整改照片</th><th>状态</th></tr></thead><tbody>
+        ${p.hazards.map(h=>`<tr><td style="font-weight:600">${h.seq}</td><td>${h.type}</td><td style="max-width:200px">${h.desc}</td><td style="color:var(--danger);font-weight:500">${h.risk}</td><td><span class="badge ${h.cat==='重大隐患'?'badge-pending':'badge-progress'}">${h.cat}</span></td><td>${h.hp?'<span style="color:var(--success);font-weight:600">&#10003; 已有</span>':'<span style="color:var(--text3)">—</span>'}</td><td>${h.rp?'<span style="color:var(--success);font-weight:600">&#10003; 已上传</span>':'<span style="color:var(--warning);font-weight:600">&#9203; 待上传</span>'}</td><td><span class="badge badge-${h.rs==='已整改'?'done':'pending'}">${h.rs}</span></td></tr>`).join('')}
+        </tbody></table>
+      </div>
+      <div id="ph-${p.id}" style="display:none">
+        <h4 style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">隐患代表照片（来自Excel）</h4>
+        <div class="photo-grid" style="margin-bottom:20px">${p.hazards.filter(h=>h.hp).map(h=>`<div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#4338ca">隐患${h.seq}照片</div><div class="photo-label">${h.type}: ${h.desc.substring(0,10)}...</div></div>`).join('')}</div>
+        <h4 style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">整改照片（工人上传）</h4>
+        <div class="photo-grid" style="margin-bottom:20px">${p.hazards.filter(h=>h.rp).map(h=>`<div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#047857">整改${h.seq}<br><span style="font-size:10px;opacity:.6">含水印</span></div><div class="photo-label">整改: ${h.desc.substring(0,10)}...</div></div>`).join('')}</div>
+        <h4 style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">门面 / 廉政监督卡</h4>
+        <div class="photo-grid"><div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1e40af">企业门面<br><span style="font-size:10px;opacity:.6">含水印</span></div></div><div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#6d28d9">廉政监督卡<br><span style="font-size:10px;opacity:.6">含水印</span></div></div></div>
+      </div>
+    </div>`;
+}
+
+function swTab(el,id){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');const m=el.closest('.modal');m.querySelectorAll('[id^="hz-"],[id^="ph-"]').forEach(d=>d.style.display='none');document.getElementById(id).style.display='block'}
+function closeModal(){document.getElementById('projectModal').style.display='none'}
+function simUpload(){const z=document.getElementById('uploadZone');z.innerHTML='<div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:20px"><svg style="width:24px;height:24px;color:var(--primary);animation:spin 1s linear infinite" fill="none" viewBox="0 0 24 24"><circle opacity=".25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path opacity=".75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg><span style="font-size:15px;font-weight:600;color:var(--primary)">正在解析 Excel 文件...</span></div>';setTimeout(()=>{z.innerHTML='<div style="padding:20px;text-align:center"><svg style="width:48px;height:48px;color:var(--success)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p style="font-size:15px;font-weight:600;color:var(--success);margin-top:8px">解析完成</p></div>';document.getElementById('uploadResult').style.display='block'},2000)}
+function simGen(id){const p=MP.find(x=>x.id===id);showToast('正在生成 '+p.name+' ...','info');setTimeout(()=>showToast(p.name+' 文档已生成','success'),1500)}
+function showToast(m,t){const el=document.getElementById('toast');el.textContent=m;el.style.background=t==='success'?'var(--success)':t==='info'?'var(--primary)':'var(--danger)';el.style.display='block';setTimeout(()=>el.style.display='none',3000)}
+function batchGen(){const c=document.querySelectorAll('.pcb:checked');if(!c.length){showToast('请先选择项目','error');return}showToast('批量生成 '+c.length+' 份...','info');setTimeout(()=>showToast(c.length+' 份文档 ZIP 下载中','success'),2000)}
+
+render();
+</script>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>

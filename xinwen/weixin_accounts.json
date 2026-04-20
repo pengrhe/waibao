@@ -1,0 +1,78 @@
+{
+    "_说明": "微信公众号配置文件。ghid 是公众号原始ID(gh_开头)",
+    "_注意": "ghid 为空的账号会被跳过",
+    "accounts": [
+        {
+            "name": "出版商务周报",
+            "ghid": "gh_ba98fe275120",
+            "category": "出版行业权威公众号",
+            "description": "国内出版行业权威媒体"
+        },
+        {
+            "name": "中国出版协会",
+            "ghid": "gh_c3e391271c6b",
+            "category": "出版行业权威公众号",
+            "description": "中国出版协会官方公众号"
+        },
+        {
+            "name": "出版人杂志",
+            "ghid": "gh_0c0305de34a9",
+            "category": "出版行业权威公众号",
+            "description": "《出版人》杂志社"
+        },
+        {
+            "name": "数字出版在线",
+            "ghid": "gh_01eaef124a86",
+            "category": "出版行业权威公众号",
+            "description": "中国音像与数字出版协会旗下平台"
+        },
+        {
+            "name": "开卷读书",
+            "ghid": "",
+            "category": "出版行业权威公众号",
+            "description": "开卷信息技术有限公司官方公众号"
+        },
+        {
+            "name": "知网研学",
+            "ghid": "gh_f3a204ff5561",
+            "category": "出版行业权威公众号",
+            "description": "中国知网官方研学平台"
+        },
+        {
+            "name": "国家版权局",
+            "ghid": "gh_088af60e3e78",
+            "category": "知识产权领域权威公众号",
+            "description": "国家版权局官方公众号"
+        },
+        {
+            "name": "中国版权保护中心",
+            "ghid": "gh_c983ae38dcf2",
+            "category": "知识产权领域权威公众号",
+            "description": "中国版权保护中心官方公众号"
+        },
+        {
+            "name": "知识产权家",
+            "ghid": "",
+            "category": "知识产权领域权威公众号",
+            "description": "知识产权专业媒体"
+        },
+        {
+            "name": "版权前沿",
+            "ghid": "",
+            "category": "知识产权领域权威公众号",
+            "description": "版权领域专业自媒体"
+        },
+        {
+            "name": "知产力",
+            "ghid": "gh_943413cfd92c",
+            "category": "知识产权领域权威公众号",
+            "description": "知识产权行业媒体"
+        },
+        {
+            "name": "中国音像著作权集体管理协会",
+            "ghid": "gh_00dbc23f2c6a",
+            "category": "知识产权领域权威公众号",
+            "description": "音集协官方公众号"
+        }
+    ]
+}

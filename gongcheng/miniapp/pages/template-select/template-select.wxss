@@ -1,0 +1,364 @@
+.page-ts {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f4f6fb;
+  overflow: hidden;
+}
+
+/* 顶部操作栏 */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 24rpx;
+  background: #fff;
+  flex-shrink: 0;
+}
+.mode-toggle {
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #6366f1;
+  background: #eef2ff;
+}
+.mode-active {
+  color: #fff;
+  background: #6366f1;
+}
+.btn-batch-confirm {
+  padding: 8rpx 28rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #fff;
+  background: #10b981;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 12rpx 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #e2e8f0;
+  flex-shrink: 0;
+}
+.search-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border-radius: 32rpx;
+  padding: 10rpx 20rpx;
+  gap: 10rpx;
+}
+.search-icon {
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #0f172a;
+  height: 44rpx;
+  line-height: 44rpx;
+}
+.search-clear {
+  font-size: 24rpx;
+  color: #94a3b8;
+  padding: 4rpx 8rpx;
+  flex-shrink: 0;
+}
+.btn-custom-add {
+  flex-shrink: 0;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #fff;
+  background: #f59e0b;
+  white-space: nowrap;
+}
+
+/* 左右布局容器 */
+.body-wrap {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.body-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.body-content.no-sidebar {
+  width: 100%;
+}
+
+/* 分类 tabs（左侧纵向） */
+.cat-bar {
+  width: 180rpx;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 16rpx 0;
+  border-right: 1rpx solid #e2e8f0;
+  box-sizing: border-box;
+}
+.cat-item {
+  display: block;
+  padding: 20rpx 20rpx;
+  margin: 0 12rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #94a3b8;
+  background: #f1f5f9;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cat-item.active {
+  background: #6366f1;
+  color: #fff;
+}
+
+/* 模式提示 */
+.mode-hint {
+  text-align: center;
+  font-size: 22rpx;
+  color: #94a3b8;
+  padding: 12rpx 0 4rpx;
+  flex-shrink: 0;
+}
+
+/* 模板列表 — height:0 + flex:1 确保 scroll-view 可滚动 */
+.template-list {
+  flex: 1;
+  height: 0;
+  padding: 16rpx 24rpx;
+  box-sizing: border-box;
+}
+.template-list.has-panel {
+  padding-bottom: 260rpx;
+}
+.tpl-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid transparent;
+  transition: border-color 0.15s;
+}
+.tpl-card:active {
+  border-color: #6366f1;
+}
+.tpl-check {
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+.check-box {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #cbd5e1;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.check-mark {
+  color: #6366f1;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+.tpl-add-icon {
+  flex-shrink: 0;
+  width: 44rpx;
+  height: 44rpx;
+  line-height: 42rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #6366f1;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-top: 2rpx;
+}
+.tpl-content {
+  flex: 1;
+  min-width: 0;
+}
+.tpl-cat {
+  font-size: 22rpx;
+  color: #6366f1;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4rpx;
+}
+.tpl-desc {
+  font-size: 28rpx;
+  color: #0f172a;
+  line-height: 1.45;
+  display: block;
+}
+.tpl-suggest {
+  font-size: 24rpx;
+  color: #6366f1;
+  margin-top: 8rpx;
+  display: block;
+}
+.tpl-ref {
+  font-size: 22rpx;
+  color: #94a3b8;
+  margin-top: 6rpx;
+  display: block;
+}
+
+/* 已选面板 */
+.selected-panel {
+  background: #fff;
+  border-top: 1rpx solid #e2e8f0;
+  padding: 12rpx 24rpx;
+  max-height: 240rpx;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.selected-head {
+  margin-bottom: 8rpx;
+}
+.selected-title {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+.sel-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 12rpx;
+  background: #f8fafc;
+  margin-bottom: 8rpx;
+}
+.sel-info {
+  flex: 1;
+  min-width: 0;
+}
+.sel-type {
+  font-size: 22rpx;
+  color: #6366f1;
+  font-weight: 600;
+  display: block;
+}
+.sel-desc {
+  font-size: 26rpx;
+  color: #0f172a;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sel-edit-hint {
+  font-size: 20rpx;
+  color: #94a3b8;
+  display: block;
+  margin-top: 4rpx;
+}
+.sel-remove {
+  width: 48rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #ef4444;
+  font-size: 24rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* 编辑面板 */
+.edit-panel {
+  padding: 16rpx 0;
+}
+.edit-row {
+  display: block;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+}
+.edit-label {
+  font-size: 24rpx;
+  color: #475569;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8rpx;
+}
+.input-wrap {
+  border: 1rpx solid #e2e8f0;
+  border-radius: 10rpx;
+  padding: 12rpx 16rpx;
+  background: #f8fafc;
+}
+.edit-input {
+  display: block;
+  width: 100%;
+  height: 48rpx;
+  line-height: 48rpx;
+  font-size: 26rpx;
+  color: #0f172a;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+.edit-textarea {
+  display: block;
+  width: 100%;
+  font-size: 26rpx;
+  color: #0f172a;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  min-height: 120rpx;
+  line-height: 1.6;
+  word-break: break-all;
+  box-sizing: border-box;
+}
+.edit-actions {
+  display: flex;
+  gap: 16rpx;
+  justify-content: flex-end;
+  margin-top: 12rpx;
+}
+.btn-cancel {
+  padding: 12rpx 30rpx;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 26rpx;
+  border-radius: 12rpx;
+  font-weight: 600;
+}
+.btn-save {
+  padding: 12rpx 30rpx;
+  background: #10b981;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 12rpx;
+  font-weight: 600;
+}
+
+.state-tip {
+  text-align: center;
+  padding: 80rpx;
+  color: #94a3b8;
+  font-size: 28rpx;
+}

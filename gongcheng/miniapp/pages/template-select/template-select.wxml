@@ -1,0 +1,110 @@
+<view class="page-ts">
+  <!-- 顶部固定区 -->
+  <view class="top-bar">
+    <view class="top-bar-left">
+      <view class="mode-toggle {{batchMode ? 'mode-active' : ''}}" bindtap="onToggleBatchMode">
+        {{batchMode ? '退出批量' : '批量添加'}}
+      </view>
+    </view>
+    <view wx:if="{{batchMode && selected.length}}" class="top-bar-right">
+      <view class="btn-batch-confirm" bindtap="onConfirm">
+        <text wx:if="{{saving}}">保存中…</text>
+        <text wx:else>确认添加 ({{selected.length}})</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索隐患描述/建议" value="{{keyword}}" bindinput="onSearchInput" confirm-type="search" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onClearSearch">✕</text>
+    </view>
+    <view class="btn-custom-add" bindtap="onCustomAdd">+ 自定义</view>
+  </view>
+
+  <view class="body-wrap">
+  <!-- 分类 tabs（左侧纵向） -->
+  <scroll-view class="cat-bar" scroll-y wx:if="{{!keyword}}">
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="cat-item {{item === currentCat ? 'active' : ''}}"
+      data-cat="{{item}}"
+      bindtap="onCatTap"
+    >{{item}}</view>
+  </scroll-view>
+
+  <view class="body-content {{keyword ? 'no-sidebar' : ''}}">
+  <view wx:if="{{loading}}" class="state-tip">加载中…</view>
+
+  <view wx:if="{{!batchMode && !loading && !keyword}}" class="mode-hint">点击隐患直接添加并跳转拍照</view>
+  <view wx:if="{{keyword && !loading}}" class="mode-hint">搜索结果：{{filteredTemplates.length}} 条</view>
+
+  <scroll-view wx:if="{{!loading}}" class="template-list {{batchMode && selected.length ? 'has-panel' : ''}}" scroll-y>
+    <view
+      wx:for="{{keyword ? filteredTemplates : templates}}"
+      wx:key="id"
+      class="tpl-card"
+      data-idx="{{index}}"
+      data-id="{{item.id}}"
+      bindtap="onTapTemplate"
+    >
+      <view wx:if="{{batchMode}}" class="tpl-check">
+        <view class="check-box">
+          <block wx:for="{{selected}}" wx:for-item="s" wx:key="id">
+            <text wx:if="{{s.id === item.id}}" class="check-mark">✓</text>
+          </block>
+        </view>
+      </view>
+      <view wx:else class="tpl-add-icon">+</view>
+      <view class="tpl-content">
+        <text class="tpl-cat" wx:if="{{keyword}}">{{item.category}}</text>
+        <text class="tpl-desc">{{item.description}}</text>
+        <text class="tpl-suggest" wx:if="{{item.suggestion}}">建议：{{item.suggestion}}</text>
+        <text class="tpl-ref" wx:if="{{item.reference_standard}}">{{item.reference_standard}} {{item.standard_clause}}</text>
+      </view>
+    </view>
+    <view wx:if="{{keyword ? !filteredTemplates.length : !templates.length}}" class="state-tip">暂无模板</view>
+  </scroll-view>
+  </view>
+  </view>
+
+  <!-- 批量模式：已选面板 -->
+  <view wx:if="{{batchMode && selected.length}}" class="selected-panel">
+    <view class="selected-head">
+      <text class="selected-title">已选 {{selected.length}} 条</text>
+    </view>
+
+    <view wx:if="{{editingIdx >= 0}}" class="edit-panel">
+      <view class="edit-row">
+        <text class="edit-label">检查项目</text>
+        <view class="input-wrap"><input class="edit-input" value="{{editType}}" bindinput="onEditTypeInput" /></view>
+      </view>
+      <view class="edit-row">
+        <text class="edit-label">隐患描述</text>
+        <view class="input-wrap"><textarea class="edit-textarea" value="{{editDesc}}" bindinput="onEditDescInput" auto-height maxlength="500" /></view>
+      </view>
+      <view class="edit-row">
+        <text class="edit-label">整改建议</text>
+        <view class="input-wrap"><textarea class="edit-textarea" value="{{editSuggestion}}" bindinput="onEditSuggestionInput" auto-height maxlength="500" /></view>
+      </view>
+      <view class="edit-actions">
+        <view class="btn-cancel" bindtap="onCancelEdit">取消</view>
+        <view class="btn-save" bindtap="onSaveEditItem">保存</view>
+      </view>
+    </view>
+
+    <block wx:else>
+      <view wx:for="{{selected}}" wx:key="id" class="sel-item">
+        <view class="sel-info" data-idx="{{index}}" bindtap="onEditItem">
+          <text class="sel-type">{{item.hazard_type}}</text>
+          <text class="sel-desc">{{item.description}}</text>
+          <text class="sel-edit-hint">点击编辑</text>
+        </view>
+        <view class="sel-remove" data-idx="{{index}}" catchtap="onRemoveSelected">✕</view>
+      </view>
+    </block>
+  </view>
+</view>

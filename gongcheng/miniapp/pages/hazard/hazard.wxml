@@ -1,0 +1,131 @@
+<view class="page-hazard">
+  <view wx:if="{{loading}}" class="state-tip">加载中…</view>
+  <view wx:elif="{{error}}" class="state-tip state-error">{{error}}</view>
+
+  <block wx:else>
+    <view wx:if="{{!isWenti}}" class="status-bar">
+      <view class="status-tag {{statusTagClass}}" bindtap="onToggleRectifyStatus" style="cursor:pointer">
+        {{statusText}}
+        <text style="font-size:20rpx;margin-left:8rpx;opacity:0.7">切换 ▸</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <block wx:if="{{editingHazard}}">
+        <view class="edit-section">
+          <view class="edit-row">
+            <text class="edit-label">检查项目</text>
+            <view class="input-wrap"><input class="edit-input" value="{{hazardEditForm.hazard_type}}" data-field="hazard_type" bindinput="onHazardEditInput" placeholder="如：用电安全" /></view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">隐患描述</text>
+            <view class="input-wrap"><textarea class="edit-textarea" value="{{hazardEditForm.description}}" data-field="description" bindinput="onHazardEditInput" auto-height maxlength="500" placeholder="请描述隐患内容" /></view>
+          </view>
+          <view class="edit-row" wx:if="{{isWenti}}">
+            <text class="edit-label">整改建议</text>
+            <view class="input-wrap"><textarea class="edit-textarea" value="{{hazardEditForm.suggestion}}" data-field="suggestion" bindinput="onHazardEditInput" auto-height maxlength="500" /></view>
+          </view>
+          <view class="edit-row" wx:if="{{!isWenti}}">
+            <text class="edit-label">风险等级</text>
+            <view class="input-wrap"><input class="edit-input" value="{{hazardEditForm.risk}}" data-field="risk" bindinput="onHazardEditInput" placeholder="如：一般隐患" /></view>
+          </view>
+          <view class="edit-row">
+            <text class="edit-label">依据标准</text>
+            <view class="input-wrap"><textarea class="edit-textarea" value="{{hazardEditForm.reference}}" data-field="reference" bindinput="onHazardEditInput" auto-height maxlength="500" placeholder="参考规范条款" /></view>
+          </view>
+          <view class="edit-actions">
+            <button class="btn-remark btn-remark-cancel" size="mini" bindtap="onCancelEditHazard">取消</button>
+            <button class="btn-remark btn-remark-save" size="mini" bindtap="onSaveEditHazard" loading="{{savingHazard}}">保存</button>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="card-head">
+          <text class="seq">#{{hazard.seq}}</text>
+          <view class="type-tag">{{hazard.hazard_type || '未分类'}}</view>
+          <view class="btn-edit-hazard" bindtap="onEditHazard">编辑</view>
+        </view>
+        <view class="desc">{{hazard.description || '暂无描述，请点击编辑'}}</view>
+
+        <view class="info-row" wx:if="{{isWenti && hazard.suggestion}}">
+          <text class="info-label">整改建议</text>
+          <text class="info-value" style="color:#6366f1">{{hazard.suggestion}}</text>
+        </view>
+        <view class="info-row" wx:if="{{hazard.risk}}">
+          <text class="info-label">风险等级</text>
+          <text class="info-value {{riskClass}}">{{hazard.risk}}</text>
+        </view>
+        <view class="info-row" wx:if="{{hazard.category}}">
+          <text class="info-label">分类</text>
+          <text class="info-value">{{hazard.category}}</text>
+        </view>
+        <view class="info-row" wx:if="{{hazard.reference}}">
+          <text class="info-label">参考规范</text>
+          <text class="info-value info-value-mono">{{hazard.reference}}</text>
+        </view>
+      </block>
+      <view class="remark-section">
+        <view class="info-row">
+          <text class="info-label">备注</text>
+          <text class="info-value remark-text" wx:if="{{!editingRemark}}">{{remarkText || '未填写'}}</text>
+        </view>
+        <view class="remark-edit-area" wx:if="{{editingRemark}}">
+          <textarea
+            class="remark-input"
+            value="{{remarkDraft}}"
+            placeholder="请输入备注内容，如：限期整改"
+            bindinput="onRemarkInput"
+            auto-height
+            maxlength="500"
+            focus="{{editingRemark}}"
+          />
+        </view>
+        <view class="remark-actions">
+          <button wx:if="{{!editingRemark}}" class="btn-remark btn-remark-edit" size="mini" bindtap="onEditRemark">编辑备注</button>
+          <block wx:else>
+            <button class="btn-remark btn-remark-cancel" size="mini" bindtap="onCancelRemark">取消</button>
+            <button class="btn-remark btn-remark-save" size="mini" bindtap="onSaveRemark" loading="{{savingRemark}}">保存</button>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="card photo-card">
+      <view class="photo-row">
+        <view class="photo-col">
+          <view class="section-title">隐患照片</view>
+          <block wx:if="{{hazard.has_hazard_photo && hazardPhotoUrl}}">
+            <image
+              class="photo-img"
+              src="{{hazardPhotoUrl}}"
+              mode="aspectFill"
+              bindtap="onPreviewHazardPhoto"
+            />
+            <button class="btn-outline" size="mini" bindtap="onChooseHazardPhoto">重新拍照</button>
+          </block>
+          <view wx:else class="upload-dashed" bindtap="onChooseHazardPhoto">
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">拍照上传</text>
+          </view>
+        </view>
+
+        <view wx:if="{{!isWenti}}" class="photo-col">
+          <view class="section-title">整改照片</view>
+          <block wx:if="{{hazard.has_rectify_photo && rectifyPhotoUrl}}">
+            <image
+              class="photo-img"
+              src="{{rectifyPhotoUrl}}"
+              mode="aspectFill"
+              bindtap="onPreviewRectifyPhoto"
+            />
+            <button class="btn-outline" size="mini" bindtap="goRectifyCamera">重新拍照</button>
+          </block>
+          <view wx:else class="upload-dashed" bindtap="goRectifyCamera">
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">拍照上传</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,29 @@
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+*.log
+*.whl
+
+# Private keys
+*.key
+
+# Uploaded files (3.5GB+)
+gongcheng/backend/uploads/
+
+# Output / generated files
+xinwen/output/
+xinwen/debug_*.png
+
+# Large reference/doc directories
+gongcheng/doc/
+gongcheng/cankao/
+gongcheng/note_images/
+
+# IDE
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store

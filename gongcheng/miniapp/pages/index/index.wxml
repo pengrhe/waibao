@@ -1,0 +1,121 @@
+<view class="page-index">
+  <!-- 首次选择弹窗 -->
+  <view wx:if="{{showTypeModal}}" class="type-modal-mask">
+    <view class="type-modal">
+      <text class="type-modal-title">选择项目类型</text>
+      <view class="type-modal-options">
+        <view class="type-option type-option-longhua" bindtap="onSelectType" data-type="longhua">
+          <text class="type-option-label">龙华项目</text>
+          <text class="type-option-desc">隐患挂牌督办核查验收</text>
+        </view>
+        <view class="type-option type-option-wenti" bindtap="onSelectType" data-type="wenti">
+          <text class="type-option-label">文体项目</text>
+          <text class="type-option-desc">文体场所安全隐患排查</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 顶部栏 -->
+  <view class="top-bar" wx:if="{{!showTypeModal}}">
+    <text class="top-bar-title">{{projectTypeLabel}}</text>
+    <view class="top-bar-actions">
+      <view class="top-bar-btn top-bar-add" bindtap="onCreateProject">+ 新建</view>
+      <view class="top-bar-btn top-bar-switch" bindtap="onSwitchType">切换</view>
+    </view>
+  </view>
+
+  <view class="search-bar" wx:if="{{!showTypeModal}}">
+    <text class="search-icon" aria-hidden="true">⌕</text>
+    <input
+      class="search-input"
+      type="text"
+      placeholder="搜索项目名称 / 地址 / 联系人"
+      placeholder-class="search-placeholder"
+      value="{{keyword}}"
+      bindinput="onSearchInput"
+      confirm-type="search"
+    />
+  </view>
+
+  <!-- 街道快速筛选 -->
+  <scroll-view class="street-filter-bar" scroll-x wx:if="{{!showTypeModal && streetList.length > 1}}">
+    <view
+      class="street-tag {{activeStreet===''?'street-tag-active':''}}"
+      bindtap="onStreetTap"
+      data-street=""
+    >全部</view>
+    <view
+      wx:for="{{streetList}}"
+      wx:key="name"
+      class="street-tag {{activeStreet===item.name?'street-tag-active':''}}"
+      bindtap="onStreetTap"
+      data-street="{{item.name}}"
+    >{{item.name}} ({{item.count}})</view>
+  </scroll-view>
+
+  <view wx:if="{{!showTypeModal && loading}}" class="state-tip">加载中…</view>
+  <view wx:elif="{{!showTypeModal && error}}" class="state-tip state-error">{{error}}</view>
+
+  <view wx:else class="main-body">
+    <!-- 左侧文件分组侧边栏 -->
+    <scroll-view class="source-sidebar" scroll-y wx:if="{{sourceFiles.length > 1}}">
+      <view
+        class="source-item {{activeSource===''?'active':''}}"
+        bindtap="onSourceTap"
+        data-name=""
+      >
+        <text class="source-name">全部</text>
+      </view>
+      <view
+        wx:for="{{sourceFiles}}"
+        wx:key="name"
+        class="source-item {{activeSource===item.name?'active':''}}"
+        bindtap="onSourceTap"
+        data-name="{{item.name}}"
+      >
+        <text class="source-name">{{item.name}}</text>
+        <text class="source-count">{{item.count}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧项目列表 -->
+    <scroll-view class="project-list {{sourceFiles.length > 1 ? '' : 'full-width'}}" scroll-y>
+      <block wx:for="{{sections}}" wx:key="street" wx:for-item="sec">
+        <view class="section-title">{{sec.street}}（{{sec.count}}）</view>
+        <view
+          class="project-card"
+          wx:for="{{sec.projects}}"
+          wx:key="id"
+          wx:for-item="p"
+          data-id="{{p.id}}"
+          bindtap="onCardTap"
+        >
+          <view class="card-head">
+            <text class="name">{{p.name}}</text>
+            <view wx:if="{{p.project_type==='wenti'}}" class="tag tag-wenti">文体</view>
+            <view class="tag {{p.statusClass}}">{{p.statusText}}</view>
+          </view>
+          <view class="info">
+            <text class="info-dot">📍</text>
+            <text>{{p.address}}</text>
+          </view>
+          <view class="info">
+            <text class="info-dot">👤</text>
+            <text>{{p.contact}}　{{p.dateStr}}</text>
+          </view>
+          <view class="progress-wrap">
+            <view class="progress-bg">
+              <view
+                class="progress-fill"
+                style="width: {{p.progressPercent}}%; background-color: {{p.progressColor}};"
+              />
+            </view>
+            <text class="progress-text">{{p.totalUploaded}}/{{p.totalNeeded}} 图片</text>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{sections.length === 0}}" class="state-tip">暂无项目</view>
+    </scroll-view>
+  </view>
+</view>

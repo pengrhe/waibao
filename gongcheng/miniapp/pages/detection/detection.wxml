@@ -1,0 +1,110 @@
+<view class="page">
+  <view class="body-wrap">
+  <scroll-view class="tab-bar" scroll-y>
+    <view
+      wx:for="{{tabs}}" wx:key="key"
+      class="tab-item {{activeTab === index ? 'tab-active' : ''}}"
+      bindtap="onTabChange" data-idx="{{index}}"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <scroll-view class="body-content" scroll-y>
+  <view wx:if="{{loading}}" class="state">加载中…</view>
+
+  <block wx:else>
+    <view wx:if="{{tabs[activeTab].multi}}" class="btn-add" bindtap="onShowAddForm">+ 添加记录</view>
+
+    <view wx:if="{{!records.length && !showForm}}" class="state empty">
+      <text>暂无记录</text>
+      <view wx:if="{{!tabs[activeTab].multi}}" class="btn-add-inline" bindtap="onShowAddForm">填写检测数据</view>
+    </view>
+
+    <view wx:for="{{records}}" wx:key="id" class="card record-card">
+      <view class="record-head">
+        <text class="record-loc">{{item.location || '—'}}</text>
+        <text class="record-result {{item.result === '不符合规范要求' ? 'result-fail' : 'result-pass'}}">{{item.result || '-'}}</text>
+      </view>
+
+      <block wx:if="{{tabs[activeTab].key === 'infrared'}}">
+        <view class="record-row">
+          <text class="record-label">编号</text><text>{{item.code || '-'}}</text>
+        </view>
+        <view class="record-row">
+          <text class="record-label">温度</text><text>{{item.temperature || '-'}}</text>
+        </view>
+      </block>
+      <block wx:elif="{{tabs[activeTab].key === 'ground_resistance'}}">
+        <view class="record-row">
+          <text class="record-label">电阻(Ω)</text><text>{{item.resistance_value || '-'}}</text>
+        </view>
+      </block>
+
+      <view wx:if="{{item.remark}}" class="record-row">
+        <text class="record-label">备注</text><text class="record-remark">{{item.remark}}</text>
+      </view>
+
+      <view class="record-photo-row">
+        <image wx:if="{{item.photoThumb}}" class="record-thumb" src="{{item.photoThumb}}" mode="aspectFill" />
+        <view wx:else class="record-thumb record-thumb-empty" bindtap="onTakePhoto" data-id="{{item.id}}">+ 照片</view>
+      </view>
+
+      <view class="record-actions">
+        <view class="btn-sm btn-edit-sm" bindtap="onEditRecord" data-id="{{item.id}}">编辑</view>
+        <view class="btn-sm btn-photo-sm" bindtap="onTakePhoto" data-id="{{item.id}}">拍照</view>
+        <view wx:if="{{tabs[activeTab].multi}}" class="btn-sm btn-del-sm" bindtap="onDeleteRecord" data-id="{{item.id}}">删除</view>
+      </view>
+    </view>
+
+    <!-- 表单 -->
+    <view wx:if="{{showForm}}" class="card form-card">
+      <view class="form-title">{{editingId ? '编辑记录' : '新增记录'}}</view>
+      <view class="form-row">
+        <text class="form-label">位置</text>
+        <view class="input-wrap"><input class="form-input" value="{{form.location}}" data-field="location" bindinput="onFormInput" /></view>
+      </view>
+
+      <block wx:if="{{tabs[activeTab].key === 'infrared'}}">
+        <view class="form-row">
+          <text class="form-label">图像编号</text>
+          <view class="input-wrap"><input class="form-input" value="{{form.code}}" data-field="code" bindinput="onFormInput" /></view>
+        </view>
+        <view class="form-row">
+          <text class="form-label">最高温度(℃)</text>
+          <view class="input-wrap"><input class="form-input" value="{{form.temperature}}" data-field="temperature" bindinput="onFormInput" type="digit" /></view>
+        </view>
+        <view class="form-hint">温度 > 70℃ 自动判定不符合</view>
+      </block>
+
+      <block wx:elif="{{tabs[activeTab].key === 'ground_resistance'}}">
+        <view class="form-row">
+          <text class="form-label">测量结果(Ω)</text>
+          <view class="input-wrap"><input class="form-input" value="{{form.resistance_value}}" data-field="resistance_value" bindinput="onFormInput" type="digit" /></view>
+        </view>
+        <view class="form-hint">电阻 > 4Ω 自动判定不符合</view>
+      </block>
+
+      <block wx:else>
+        <view class="form-row">
+          <text class="form-label">检测结果</text>
+          <view class="result-picks">
+            <view class="result-pick {{form.result === '符合规范要求' ? 'pick-active' : ''}}" bindtap="onResultPick" data-val="符合规范要求">符合</view>
+            <view class="result-pick {{form.result === '不符合规范要求' ? 'pick-active pick-fail' : ''}}" bindtap="onResultPick" data-val="不符合规范要求">不符合</view>
+            <view class="result-pick {{form.result === '/' ? 'pick-active' : ''}}" bindtap="onResultPick" data-val="/">/</view>
+            <view class="result-pick {{form.result === '-' ? 'pick-active' : ''}}" bindtap="onResultPick" data-val="-">-</view>
+          </view>
+        </view>
+        <view class="form-row">
+          <text class="form-label">备注</text>
+          <view class="input-wrap"><input class="form-input" value="{{form.remark}}" data-field="remark" bindinput="onFormInput" /></view>
+        </view>
+      </block>
+
+      <view class="form-actions">
+        <button class="btn-cancel" size="mini" bindtap="onCancelForm">取消</button>
+        <button class="btn-save" size="mini" bindtap="onSaveForm" loading="{{saving}}">保存</button>
+      </view>
+    </view>
+  </block>
+  </scroll-view>
+  </view>
+</view>

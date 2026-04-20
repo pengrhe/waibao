@@ -1,0 +1,99 @@
+<view class="page-root">
+  <block wx:if="{{!showPreview}}">
+    <view class="camera-page">
+      <camera
+        class="camera-full"
+        device-position="{{devicePosition}}"
+        flash="off"
+        resolution="high"
+      />
+      <!-- 竖屏：上下遮罩 -->
+      <block wx:if="{{maskH > 0}}">
+        <view class="crop-mask-top {{isPortrait ? 'crop-mask-translucent' : ''}}" style="height:{{maskH}}px"></view>
+        <view class="crop-mask-bottom {{isPortrait ? 'crop-mask-translucent' : ''}}" style="height:{{maskH}}px"></view>
+        <view class="crop-border" style="top:{{maskH}}px;bottom:{{maskH}}px;left:0;right:0"></view>
+      </block>
+      <!-- 横屏：左右遮罩 -->
+      <block wx:if="{{maskW > 0}}">
+        <view class="crop-mask-left {{isPortrait ? 'crop-mask-translucent' : ''}}" style="width:{{maskW}}px"></view>
+        <view class="crop-mask-right {{isPortrait ? 'crop-mask-translucent' : ''}}" style="width:{{maskW}}px"></view>
+        <view class="crop-border" style="left:{{maskW}}px;right:{{maskW}}px;top:0;bottom:0"></view>
+      </block>
+
+      <view wx:if="{{isPortrait}}" class="portrait-hint">
+        <text class="portrait-hint-text">请竖持手机拍摄</text>
+      </view>
+
+      <view class="shutter-area {{maskH < 80 ? 'shutter-float' : ''}}" style="height:{{maskH}}px">
+        <view class="tool-btn" bindtap="onFlipCamera">
+          <view class="icon-flip">
+            <view class="flip-arrow flip-arrow-1"></view>
+            <view class="flip-arrow flip-arrow-2"></view>
+          </view>
+          <text class="tool-label">翻转</text>
+        </view>
+
+        <view
+          class="shutter-outer {{takingPhoto ? 'shutter-disabled' : ''}}"
+          bindtap="onTakePhoto"
+        >
+          <view class="shutter-inner"></view>
+        </view>
+
+        <view class="tool-btn" bindtap="onChooseAlbum">
+          <view class="icon-album">
+            <view class="album-inner"></view>
+          </view>
+          <text class="tool-label">相册</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{showPreview}}">
+    <view class="preview-page">
+      <image
+        class="preview-image"
+        src="{{watermarkedPath}}"
+        mode="aspectFit"
+      />
+      <view class="preview-actions">
+        <button class="action-btn action-secondary" bindtap="onRetake">重新拍照</button>
+        <button class="action-btn action-primary" bindtap="onConfirmUpload">使用此照片</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- 水印时间选择弹框 -->
+  <view class="picker-mask" wx:if="{{showTimePicker}}" catchtouchmove="true">
+    <view class="picker-dialog">
+      <view class="picker-title">选择水印时间</view>
+      <view class="picker-row">
+        <text class="picker-label">日期</text>
+        <picker mode="date" value="{{pickerDate}}" bindchange="onPickerDateChange">
+          <view class="picker-value">{{pickerDate}}</view>
+        </picker>
+      </view>
+      <view class="picker-row">
+        <text class="picker-label">时间</text>
+        <picker mode="time" value="{{pickerTime}}" bindchange="onPickerTimeChange">
+          <view class="picker-value">{{pickerTime}}</view>
+        </picker>
+      </view>
+      <view class="picker-hint">水印将显示：{{pickerDate}} {{pickerTime}}</view>
+      <view class="picker-actions">
+        <button class="picker-btn picker-cancel" bindtap="onTimePickerCancel">取消</button>
+        <button class="picker-btn picker-confirm" bindtap="onTimePickerConfirm">确认添加水印</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading-mask" wx:if="{{uploading}}">
+    <view class="loading-box">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">上传中，请稍候…</text>
+    </view>
+  </view>
+
+  <canvas type="2d" id="cropCanvas" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px"></canvas>
+</view>

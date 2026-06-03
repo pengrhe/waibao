@@ -9,6 +9,7 @@ from datetime import datetime
 from database import get_db
 from models import Project, Hazard, ScenePhoto, GeneratedDoc, HazardTemplate, DetectionRecord, ChecklistResult, Inspector
 from config import EXCEL_DIR, HAZARD_PHOTO_DIR, RECTIFY_PHOTO_DIR, SCENE_PHOTO_DIR, DETECTION_PHOTO_DIR
+from services.image_compress import compress_uploaded_image
 from services.excel_parser import parse_excel
 from services.doc_generator import generate_document
 
@@ -34,6 +35,16 @@ def _resolve_street_group(street: str) -> str:
             return group
     return ""
 
+
+def _get_default_inspectors(db: Session, group: str) -> str:
+    """从数据库 inspectors 表读取指定分组的人员名单，用顿号连接。"""
+    if not group:
+        return ""
+    rows = db.query(Inspector).filter(Inspector.street_group == group).all()
+    if rows:
+        return "、".join(r.name for r in rows)
+    return DEFAULT_INSPECTORS.get(group, "")
+
 VALID_DETECTION_TYPES = (
     "infrared", "ground_resistance", "residual_current", "insulation",
     "terminal", "indoor_wiring", "distribution_box", "ceiling_wiring", "grounding",
@@ -50,8 +61,8 @@ async def upload_excel(
 ):
     if not file.filename.endswith(".xlsx"):
         raise HTTPException(400, "仅支持 .xlsx 格式")
-    if project_type not in ("longhua", "wenti"):
-        raise HTTPException(400, "project_type 必须为 longhua 或 wenti")
+    if project_type not in ("longhua", "wenti", "lvye"):
+        raise HTTPException(400, "project_type 必须为 longhua、wenti 或 lvye")
 
     save_path = os.path.join(EXCEL_DIR, file.filename)
     with open(save_path, "wb") as f:
@@ -60,6 +71,8 @@ async def upload_excel(
 
     if project_type == "wenti":
         return _upload_wenti_excel(save_path, file.filename, db)
+    elif project_type == "lvye":
+        return _upload_lvye_excel(save_path, file.filename, db)
     else:
         return _upload_longhua_excel(save_path, file.filename, db)
 
@@ -73,7 +86,7 @@ def _upload_longhua_excel(save_path: str, filename: str, db: Session):
     created_projects = []
     for pd in projects_data:
         group = _resolve_street_group(pd.street)
-        default_insp = DEFAULT_INSPECTORS.get(group, "")
+        default_insp = _get_default_inspectors(db, group)
         proj = Project(
             name=pd.name, street=pd.street, address=pd.address,
             contact=pd.contact, phone=pd.phone, category=pd.category,
@@ -144,6 +157,55 @@ def _upload_wenti_excel(save_path: str, filename: str, db: Session):
     }
 
 
+def _upload_lvye_excel(save_path: str, filename: str, db: Session):
+    from services.excel_parser_lvye import parse_lvye_excel
+
+    try:
+        venues = parse_lvye_excel(save_path)
+    except Exception as e:
+        raise HTTPException(500, f"旅业Excel解析失败: {str(e)}")
+
+    created_projects = []
+    for v in venues:
+        proj = Project(
+            name=v.registered_name or v.venue_name,
+            street=v.street, address=v.address,
+            contact=v.contact, phone=v.phone,
+            category="旅馆酒店",
+            status="pending", excel_file=save_path,
+            project_type="lvye", report_code=v.report_code,
+            area=v.area, floor_info=v.floor_info,
+            inspectors=v.inspectors,
+            check_date=v.check_date,
+        )
+        db.add(proj)
+        db.flush()
+
+        for hd in v.hazards:
+            hazard = Hazard(
+                project_id=proj.id, seq=hd.seq,
+                description=hd.description,
+                suggestion=hd.suggestion,
+                reference=hd.reference,
+                rectify_status="pending",
+            )
+            db.add(hazard)
+
+        created_projects.append({
+            "id": proj.id, "name": proj.name, "street": proj.street,
+            "category": proj.category, "report_code": proj.report_code,
+            "hazard_count": len(v.hazards),
+        })
+
+    db.commit()
+    return {
+        "message": "旅业项目解析完成",
+        "filename": filename,
+        "project_count": len(created_projects),
+        "projects": created_projects,
+    }
+
+
 @router.get("/projects")
 def list_projects(
     street: Optional[str] = None, status: Optional[str] = None,
@@ -167,7 +229,7 @@ def list_projects(
             hazards = db.query(Hazard).filter(Hazard.project_id == p.id).all()
             scene_photos = db.query(ScenePhoto).filter(ScenePhoto.project_id == p.id).all()
             scene_count = len(scene_photos)
-            if p.project_type == "wenti":
+            if p.project_type in ("wenti", "lvye"):
                 hazard_photo_uploaded = sum(1 for h in hazards if h.hazard_photo_path)
                 total_needed = 4 + len(hazards)
                 total_uploaded = scene_count + hazard_photo_uploaded
@@ -191,7 +253,7 @@ def list_projects(
                 "total_uploaded": total_uploaded,
                 "source_file": excel_name,
             }
-            if p.project_type == "wenti":
+            if p.project_type in ("wenti", "lvye"):
                 item["report_code"] = p.report_code
                 item["area"] = p.area
                 item["floor_info"] = p.floor_info
@@ -210,8 +272,8 @@ async def create_project(body: dict, db: Session = Depends(get_db)):
         raise HTTPException(400, "项目名称不能为空")
 
     project_type = body.get("project_type", "wenti")
-    if project_type not in ("longhua", "wenti"):
-        raise HTTPException(400, "project_type 必须为 longhua 或 wenti")
+    if project_type not in ("longhua", "wenti", "lvye"):
+        raise HTTPException(400, "project_type 必须为 longhua、wenti 或 lvye")
 
     proj = Project(
         name=name,
@@ -224,7 +286,7 @@ async def create_project(body: dict, db: Session = Depends(get_db)):
         project_type=project_type,
     )
 
-    if project_type == "wenti":
+    if project_type in ("wenti", "lvye"):
         proj.report_code = (body.get("report_code") or "").strip()
         proj.area = (body.get("area") or "").strip()
         proj.floor_info = (body.get("floor_info") or "").strip()
@@ -235,7 +297,7 @@ async def create_project(body: dict, db: Session = Depends(get_db)):
         proj.construct_unit = (body.get("construct_unit") or "").strip()
         proj.supervise_unit = (body.get("supervise_unit") or "").strip()
         group = _resolve_street_group(proj.street)
-        proj.inspectors = body.get("inspectors") or DEFAULT_INSPECTORS.get(group, "")
+        proj.inspectors = body.get("inspectors") or _get_default_inspectors(db, group)
         proj.check_date = (body.get("check_date") or "").strip()
 
     db.add(proj)
@@ -269,6 +331,13 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
     hazards = db.query(Hazard).filter(Hazard.project_id == project_id).order_by(Hazard.seq).all()
     scene_photos = db.query(ScenePhoto).filter(ScenePhoto.project_id == project_id).all()
 
+    inspectors_val = proj.inspectors or ""
+    if (proj.project_type or "longhua") == "longhua":
+        group = _resolve_street_group(proj.street)
+        live = _get_default_inspectors(db, group)
+        if live:
+            inspectors_val = live
+
     data = {
         "id": proj.id, "name": proj.name, "street": proj.street,
         "address": proj.address, "contact": proj.contact, "phone": proj.phone,
@@ -276,7 +345,7 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
         "project_type": proj.project_type or "longhua",
         "build_unit": proj.build_unit, "construct_unit": proj.construct_unit,
         "supervise_unit": proj.supervise_unit, "check_date": proj.check_date,
-        "inspectors": proj.inspectors or "",
+        "inspectors": inspectors_val,
         "hazards": [{
             "id": h.id, "seq": h.seq, "hazard_type": h.hazard_type,
             "description": h.description, "risk": h.risk, "category": h.category,
@@ -290,7 +359,7 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
             "id": sp.id, "photo_type": sp.photo_type,
         } for sp in scene_photos],
     }
-    if proj.project_type == "wenti":
+    if proj.project_type in ("wenti", "lvye"):
         data["report_code"] = proj.report_code
         data["area"] = proj.area
         data["floor_info"] = proj.floor_info
@@ -346,9 +415,8 @@ async def upload_rectify_photo(hazard_id: int, file: UploadFile = File(...), db:
     filename = f"rectify_p{hazard.project_id}_h{hazard_id}{ext}"
     save_path = os.path.join(RECTIFY_PHOTO_DIR, filename)
 
-    with open(save_path, "wb") as f:
-        content = await file.read()
-        f.write(content)
+    content = await file.read()
+    save_path = compress_uploaded_image(content, save_path)
 
     hazard.rectify_photo_path = save_path
     hazard.rectify_status = "done"
@@ -373,9 +441,8 @@ async def upload_scene_photo(
     filename = f"scene_p{project_id}_{photo_type}{ext}"
     save_path = os.path.join(SCENE_PHOTO_DIR, filename)
 
-    with open(save_path, "wb") as f:
-        content = await file.read()
-        f.write(content)
+    content = await file.read()
+    save_path = compress_uploaded_image(content, save_path)
 
     existing = db.query(ScenePhoto).filter(
         ScenePhoto.project_id == project_id, ScenePhoto.photo_type == photo_type
@@ -419,8 +486,10 @@ def generate_doc(project_id: int, db: Session = Depends(get_db)):
 
     if proj.project_type == "wenti":
         output_path = _generate_wenti(proj, hazards, scene_photos, db)
+    elif proj.project_type == "lvye":
+        output_path = _generate_lvye(proj, hazards, scene_photos, db)
     else:
-        output_path = _generate_longhua(proj, hazards, scene_photos)
+        output_path = _generate_longhua(proj, hazards, scene_photos, db)
 
     file_size = os.path.getsize(output_path)
     file_name = os.path.basename(output_path)
@@ -453,13 +522,20 @@ def generate_doc(project_id: int, db: Session = Depends(get_db)):
     }
 
 
-def _generate_longhua(proj, hazards, scene_photos) -> str:
+def _generate_longhua(proj, hazards, scene_photos, db=None) -> str:
     facade_photo = next((sp.photo_path for sp in scene_photos if sp.photo_type == "facade"), None)
     card_photo = next((sp.photo_path for sp in scene_photos if sp.photo_type == "card"), None)
 
+    inspectors_val = proj.inspectors or ""
+    if db:
+        group = _resolve_street_group(proj.street)
+        live = _get_default_inspectors(db, group)
+        if live:
+            inspectors_val = live
+
     proj_dict = {
         "name": proj.name, "street": proj.street, "address": proj.address,
-        "inspectors": proj.inspectors or "",
+        "inspectors": inspectors_val,
         "check_date": proj.check_date or "",
     }
     hz_list = [{
@@ -480,6 +556,13 @@ def _generate_longhua(proj, hazards, scene_photos) -> str:
 def _generate_wenti(proj, hazards, scene_photos, db=None) -> str:
     from services.doc_generator_wenti import generate_wenti_document
 
+    inspectors_val = proj.inspectors or ""
+    if db:
+        group = _resolve_street_group(proj.street)
+        live = _get_default_inspectors(db, group)
+        if live:
+            inspectors_val = live
+
     proj_dict = {
         "name": proj.name, "street": proj.street, "address": proj.address,
         "contact": proj.contact, "phone": proj.phone, "category": proj.category,
@@ -487,7 +570,7 @@ def _generate_wenti(proj, hazards, scene_photos, db=None) -> str:
         "report_code": proj.report_code or "",
         "area": proj.area or "",
         "floor_info": proj.floor_info or "",
-        "inspectors": proj.inspectors or "",
+        "inspectors": inspectors_val,
     }
     hz_list = [{
         "seq": h.seq, "hazard_type": h.hazard_type,
@@ -527,6 +610,44 @@ def _generate_wenti(proj, hazards, scene_photos, db=None) -> str:
         return generate_wenti_document(proj_dict, hz_list, photos, detection_records, checklist_results)
     except Exception as e:
         raise HTTPException(500, f"文体文档生成失败: {str(e)}")
+
+
+def _generate_lvye(proj, hazards, scene_photos, db=None) -> str:
+    from services.doc_generator_lvye import generate_lvye_document
+
+    inspectors_val = proj.inspectors or ""
+    if db:
+        group = _resolve_street_group(proj.street)
+        live = _get_default_inspectors(db, group)
+        if live:
+            inspectors_val = live
+
+    proj_dict = {
+        "name": proj.name, "street": proj.street, "address": proj.address,
+        "contact": proj.contact, "phone": proj.phone, "category": proj.category,
+        "check_date": proj.check_date or "",
+        "report_code": proj.report_code or "",
+        "area": proj.area or "",
+        "floor_info": proj.floor_info or "",
+        "inspectors": inspectors_val,
+    }
+    hz_list = [{
+        "seq": h.seq, "description": h.description,
+        "suggestion": h.suggestion or "",
+        "hazard_photo_path": h.hazard_photo_path,
+        "reference": h.reference or "",
+        "remark": h.remark or "",
+    } for h in hazards]
+
+    photos = {}
+    for sp in scene_photos:
+        if sp.photo_path and os.path.exists(sp.photo_path):
+            photos[sp.photo_type] = sp.photo_path
+
+    try:
+        return generate_lvye_document(proj_dict, hz_list, photos)
+    except Exception as e:
+        raise HTTPException(500, f"旅业文档生成失败: {str(e)}")
 
 
 @router.get("/projects/{project_id}/download")
@@ -764,7 +885,7 @@ def _update_project_status(project_id: int, db: Session):
     any_uploaded = any(h.rectify_photo_path for h in hazards) or len(scene_photos) > 0
     has_facade = any(sp.photo_type == "facade" for sp in scene_photos)
 
-    if proj.project_type == "wenti":
+    if proj.project_type in ("wenti", "lvye"):
         hazard_photos_done = all(h.hazard_photo_path for h in hazards) if hazards else True
         any_hazard_photo = any(h.hazard_photo_path for h in hazards)
         if hazard_photos_done and (len(hazards) > 0 or has_facade):
@@ -936,9 +1057,8 @@ async def upload_hazard_photo(hazard_id: int, file: UploadFile = File(...), db: 
     filename = f"hazard_p{hazard.project_id}_h{hazard_id}{ext}"
     save_path = os.path.join(HAZARD_PHOTO_DIR, filename)
 
-    with open(save_path, "wb") as f:
-        content = await file.read()
-        f.write(content)
+    content = await file.read()
+    save_path = compress_uploaded_image(content, save_path)
 
     hazard.hazard_photo_path = save_path
     db.commit()
@@ -987,13 +1107,13 @@ async def add_detection(project_id: int, body: dict, db: Session = Depends(get_d
     if det_type == "infrared" and not result_val:
         try:
             temp = float(body.get("temperature", "0") or "0")
-            result_val = "不符合规范要求" if temp > 70 else "符合规范要求"
+            result_val = "符合规范要求"
         except (ValueError, TypeError):
             pass
     if det_type == "ground_resistance" and not result_val:
         try:
             res = float(body.get("resistance_value", "0") or "0")
-            result_val = "不符合规范要求" if res > 4 else "符合规范要求"
+            result_val = "符合规范要求"
         except (ValueError, TypeError):
             pass
 
@@ -1028,13 +1148,13 @@ async def update_detection(record_id: int, body: dict, db: Session = Depends(get
     if record.detection_type == "infrared" and "temperature" in body and "result" not in body:
         try:
             temp = float(body["temperature"] or "0")
-            record.result = "不符合规范要求" if temp > 70 else "符合规范要求"
+            record.result = "符合规范要求"
         except (ValueError, TypeError):
             pass
     if record.detection_type == "ground_resistance" and "resistance_value" in body and "result" not in body:
         try:
             res = float(body["resistance_value"] or "0")
-            record.result = "不符合规范要求" if res > 4 else "符合规范要求"
+            record.result = "符合规范要求"
         except (ValueError, TypeError):
             pass
 
@@ -1062,9 +1182,8 @@ async def upload_detection_photo(record_id: int, file: UploadFile = File(...), d
     filename = f"det_p{record.project_id}_{record.detection_type}_{record_id}{ext}"
     save_path = os.path.join(DETECTION_PHOTO_DIR, filename)
 
-    with open(save_path, "wb") as f:
-        content = await file.read()
-        f.write(content)
+    content = await file.read()
+    save_path = compress_uploaded_image(content, save_path)
 
     record.photo_path = save_path
     db.commit()
@@ -1184,6 +1303,111 @@ def add_inspector(body: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(ins)
     return {"id": ins.id, "name": ins.name, "street_group": ins.street_group}
+
+
+@router.get("/statistics")
+def get_statistics(project_type: Optional[str] = None, db: Session = Depends(get_db)):
+    """Return aggregated statistics for the dashboard analytics page."""
+    q = db.query(Project)
+    if project_type:
+        q = q.filter(Project.project_type == project_type)
+    all_projects = q.all()
+
+    total_projects = len(all_projects)
+    status_done = sum(1 for p in all_projects if p.status == "done")
+    status_progress = sum(1 for p in all_projects if p.status == "progress")
+    status_pending = sum(1 for p in all_projects if p.status == "pending")
+
+    project_ids = [p.id for p in all_projects]
+    all_hazards = db.query(Hazard).filter(Hazard.project_id.in_(project_ids)).all() if project_ids else []
+    all_scene = db.query(ScenePhoto).filter(ScenePhoto.project_id.in_(project_ids)).all() if project_ids else []
+    all_docs = db.query(GeneratedDoc).filter(GeneratedDoc.project_id.in_(project_ids)).all() if project_ids else []
+
+    total_hazards = len(all_hazards)
+    hazard_done = sum(1 for h in all_hazards if h.rectify_status == "done")
+    hazard_pending = total_hazards - hazard_done
+    has_hazard_photo = sum(1 for h in all_hazards if h.hazard_photo_path)
+    has_rectify_photo = sum(1 for h in all_hazards if h.rectify_photo_path)
+    total_scene_photos = len(all_scene)
+    total_docs = len(all_docs)
+
+    # By hazard type
+    type_map: dict = {}
+    for h in all_hazards:
+        t = h.hazard_type or "未分类"
+        type_map[t] = type_map.get(t, 0) + 1
+    by_hazard_type = [{"name": k, "count": v} for k, v in sorted(type_map.items(), key=lambda x: -x[1])]
+
+    # By street
+    street_map: dict = {}
+    proj_street = {p.id: (p.street or "未知") for p in all_projects}
+    for h in all_hazards:
+        s = proj_street.get(h.project_id, "未知")
+        if s not in street_map:
+            street_map[s] = {"total": 0, "types": {}}
+        street_map[s]["total"] += 1
+        t = h.hazard_type or "未分类"
+        street_map[s]["types"][t] = street_map[s]["types"].get(t, 0) + 1
+
+    street_project_count = {}
+    street_done_count = {}
+    for p in all_projects:
+        s = p.street or "未知"
+        street_project_count[s] = street_project_count.get(s, 0) + 1
+        if p.status == "done":
+            street_done_count[s] = street_done_count.get(s, 0) + 1
+
+    by_street = []
+    for s in sorted(street_map.keys()):
+        by_street.append({
+            "name": s,
+            "project_count": street_project_count.get(s, 0),
+            "project_done": street_done_count.get(s, 0),
+            "hazard_count": street_map[s]["total"],
+            "types": [{"name": k, "count": v} for k, v in sorted(street_map[s]["types"].items(), key=lambda x: -x[1])],
+        })
+
+    # By category (venue type)
+    cat_map: dict = {}
+    proj_cat = {p.id: (p.category or "未分类") for p in all_projects}
+    for h in all_hazards:
+        c = proj_cat.get(h.project_id, "未分类")
+        if c not in cat_map:
+            cat_map[c] = {"total": 0, "types": {}}
+        cat_map[c]["total"] += 1
+        t = h.hazard_type or "未分类"
+        cat_map[c]["types"][t] = cat_map[c]["types"].get(t, 0) + 1
+
+    cat_project_count = {}
+    for p in all_projects:
+        c = p.category or "未分类"
+        cat_project_count[c] = cat_project_count.get(c, 0) + 1
+
+    by_category = []
+    for c in sorted(cat_map.keys()):
+        by_category.append({
+            "name": c,
+            "project_count": cat_project_count.get(c, 0),
+            "hazard_count": cat_map[c]["total"],
+            "types": [{"name": k, "count": v} for k, v in sorted(cat_map[c]["types"].items(), key=lambda x: -x[1])],
+        })
+
+    return {
+        "total_projects": total_projects,
+        "status_done": status_done,
+        "status_progress": status_progress,
+        "status_pending": status_pending,
+        "total_hazards": total_hazards,
+        "hazard_done": hazard_done,
+        "hazard_pending": hazard_pending,
+        "has_hazard_photo": has_hazard_photo,
+        "has_rectify_photo": has_rectify_photo,
+        "total_scene_photos": total_scene_photos,
+        "total_docs": total_docs,
+        "by_hazard_type": by_hazard_type,
+        "by_street": by_street,
+        "by_category": by_category,
+    }
 
 
 @router.delete("/inspectors/{inspector_id}")

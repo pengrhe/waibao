@@ -2,6 +2,7 @@ const {
   getDetections, addDetection, updateDetection, deleteDetection,
   uploadDetectionPhoto, getDetectionPhotoUrl, downloadImage,
 } = require('../../utils/api.js');
+const { compressPhoto } = require('../../utils/compress.js');
 
 const TABS = [
   { key: 'infrared', label: '红外检测', multi: true },
@@ -160,9 +161,11 @@ Page({
   },
 
   async _doUploadPhoto(recordId, filePath) {
-    wx.showLoading({ title: '上传中' });
+    wx.showLoading({ title: '压缩中' });
     try {
-      await uploadDetectionPhoto(recordId, filePath);
+      const compressed = await compressPhoto(filePath);
+      wx.showLoading({ title: '上传中' });
+      await uploadDetectionPhoto(recordId, compressed);
       wx.hideLoading();
       wx.showToast({ title: '上传成功', icon: 'success' });
       this.loadRecords();

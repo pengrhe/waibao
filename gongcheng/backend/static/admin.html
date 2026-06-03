@@ -41,7 +41,7 @@
   .sidebar-footer .name{color:rgba(255,255,255,.9);font-size:13px;font-weight:600}
   .sidebar-footer .email{color:rgba(255,255,255,.35);font-size:11px}
 
-  .main{flex:1;padding:28px 32px;overflow-y:auto;height:100vh}
+  .main{flex:1;padding:28px 32px;padding-top:64px;overflow-y:auto;height:100vh}
   .page-header{margin-bottom:28px}
   .page-header h2{font-size:24px;font-weight:800;color:var(--text);letter-spacing:-.5px}
   .page-header p{color:var(--text3);font-size:14px;margin-top:4px}
@@ -202,6 +202,10 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         人员管理
       </div>
+      <div class="sidebar-item" data-page="statistics" onclick="switchPage('statistics')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        数据统计
+      </div>
     </nav>
     <div class="sidebar-footer">
       <div class="user">
@@ -211,9 +215,28 @@
     </div>
   </div>
 
-  <div id="typeSwitchBtn" onclick="openTypeSwitch()" style="position:fixed;top:16px;right:32px;z-index:40;padding:10px 24px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:all .2s;border:2px solid #a7f3d0;background:#ecfdf5;color:#065f46" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 24px rgba(0,0,0,.2)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,.15)'">
-    <svg style="width:18px;height:18px;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4-4m-4 4l4 4"/></svg>
-    <span id="typeLabel" style="letter-spacing:.5px">龙华项目</span>
+  <div style="position:fixed;top:16px;right:32px;z-index:100">
+    <div id="typeSwitchBtn" onclick="openTypeSwitch()" style="padding:10px 24px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:all .2s;border:2px solid #a7f3d0;background:#ecfdf5;color:#065f46" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 24px rgba(0,0,0,.2)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(0,0,0,.15)'">
+      <svg style="width:18px;height:18px;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+      <span id="typeLabel" style="letter-spacing:.5px">龙华项目</span>
+    </div>
+    <div id="typeSwitchMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:200px;background:var(--surface);border-radius:var(--radius-sm);box-shadow:var(--shadow-xl);border:1px solid var(--border);overflow:hidden;animation:scaleIn .15s ease">
+      <div class="type-menu-item" onclick="selectProjectType('longhua')" data-type="longhua" style="padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;border-left:3px solid transparent" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+        <span style="width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0"></span>
+        <span style="font-size:14px;font-weight:700;color:#065f46">龙华项目</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto">隐患挂牌督办</span>
+      </div>
+      <div class="type-menu-item" onclick="selectProjectType('wenti')" data-type="wenti" style="padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;border-left:3px solid transparent" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+        <span style="width:8px;height:8px;border-radius:50%;background:#8b5cf6;flex-shrink:0"></span>
+        <span style="font-size:14px;font-weight:700;color:#5b21b6">文体项目</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto">文体场所排查</span>
+      </div>
+      <div class="type-menu-item" onclick="selectProjectType('lvye')" data-type="lvye" style="padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;border-left:3px solid transparent" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+        <span style="width:8px;height:8px;border-radius:50%;background:#f97316;flex-shrink:0"></span>
+        <span style="font-size:14px;font-weight:700;color:#9a3412">旅业项目</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto">C包旅馆酒店</span>
+      </div>
+    </div>
   </div>
   <div class="main" id="mainContent" style="position:relative">
     <div class="loading-center"><div class="loading-spinner dark"></div><p style="color:var(--text3);font-size:14px">加载中...</p></div>
@@ -239,6 +262,10 @@
         <div style="font-size:18px;font-weight:800;color:#5b21b6;margin-bottom:6px">文体项目</div>
         <div style="font-size:12px;color:#5b21b6;opacity:.6">文体场所安全隐患排查</div>
       </div>
+      <div onclick="selectProjectType('lvye')" style="flex:1;padding:28px 20px;border-radius:var(--radius);cursor:pointer;background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #fed7aa;transition:all .2s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(234,88,12,.2)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="font-size:18px;font-weight:800;color:#9a3412;margin-bottom:6px">旅业项目</div>
+        <div style="font-size:12px;color:#9a3412;opacity:.6">旅业安全隐患排查（C包）</div>
+      </div>
     </div>
   </div>
 </div>
@@ -253,7 +280,7 @@ let filterStatus = '';
 
 function initProjectType() {
   const saved = localStorage.getItem('projectType');
-  if (saved === 'longhua' || saved === 'wenti') {
+  if (saved === 'longhua' || saved === 'wenti' || saved === 'lvye') {
     filterProjectType = saved;
     updateTypeUI();
   } else {
@@ -263,30 +290,51 @@ function initProjectType() {
 
 function selectProjectType(type) {
   filterProjectType = type;
+  filterCategory = '';
   localStorage.setItem('projectType', type);
   document.getElementById('typeSelectModal').style.display = 'none';
+  const menu = document.getElementById('typeSwitchMenu');
+  if (menu) menu.style.display = 'none';
   updateTypeUI();
   render();
 }
 
 function openTypeSwitch() {
-  const newType = filterProjectType === 'longhua' ? 'wenti' : 'longhua';
-  selectProjectType(newType);
+  const menu = document.getElementById('typeSwitchMenu');
+  if (menu.style.display === 'none') {
+    menu.querySelectorAll('.type-menu-item').forEach(el => {
+      el.style.borderLeftColor = el.dataset.type === filterProjectType ? 'var(--primary)' : 'transparent';
+      el.style.background = el.dataset.type === filterProjectType ? '#f1f5f9' : '';
+    });
+    menu.style.display = 'block';
+    setTimeout(() => document.addEventListener('click', _closeTypeMenu, { once: true }), 0);
+  } else {
+    menu.style.display = 'none';
+  }
+}
+function _closeTypeMenu() {
+  document.getElementById('typeSwitchMenu').style.display = 'none';
 }
 
 function updateTypeUI() {
   const btn = document.getElementById('typeSwitchBtn');
   const label = document.getElementById('typeLabel');
-  const isLH = filterProjectType === 'longhua';
-  if (label) label.textContent = isLH ? '龙华项目' : '文体项目';
+  const TYPE_CFG = {
+    longhua: { label: '龙华项目', bg: '#ecfdf5', color: '#065f46', border: '#a7f3d0' },
+    wenti:   { label: '文体项目', bg: '#faf5ff', color: '#5b21b6', border: '#ddd6fe' },
+    lvye:    { label: '旅业项目', bg: '#fff7ed', color: '#9a3412', border: '#fed7aa' },
+  };
+  const cfg = TYPE_CFG[filterProjectType] || TYPE_CFG.longhua;
+  if (label) label.textContent = cfg.label;
   if (btn) {
-    btn.style.background = isLH ? '#ecfdf5' : '#faf5ff';
-    btn.style.color = isLH ? '#065f46' : '#5b21b6';
-    btn.style.borderColor = isLH ? '#a7f3d0' : '#ddd6fe';
+    btn.style.background = cfg.bg;
+    btn.style.color = cfg.color;
+    btn.style.borderColor = cfg.border;
   }
+  const isLH = filterProjectType === 'longhua';
   const menuTpl = document.getElementById('menuTemplates');
   const menuInsp = document.getElementById('menuInspectors');
-  if (menuTpl) menuTpl.style.display = isLH ? 'none' : 'flex';
+  if (menuTpl) menuTpl.style.display = (filterProjectType === 'wenti' || filterProjectType === 'lvye') ? 'flex' : 'none';
   if (menuInsp) menuInsp.style.display = isLH ? 'flex' : 'none';
   if (isLH && curPage === 'templates') switchPage('dashboard');
   if (!isLH && curPage === 'inspectors') switchPage('dashboard');
@@ -297,6 +345,7 @@ let filterSourceFile = '';
 let collapsedGroups = {};
 let uploadProjectType = 'longhua';
 let searchKeyword = '';
+let _allProjects = [];
 let projectPage = 1;
 const PAGE_SIZE = 20;
 let categories = [];
@@ -328,6 +377,14 @@ function debouncedSearchRender(inputEl) {
 }
 
 function renderKeepSearch() {
+  if (curPage === 'projects') {
+    applySearchFilter();
+    const container = document.querySelector('[data-role="project-list-area"]');
+    if (container) {
+      container.innerHTML = renderProjectListInner();
+      return;
+    }
+  }
   const activeEl = document.activeElement;
   const isSearchFocused = activeEl && activeEl.dataset && activeEl.dataset.role === 'search';
   const savedValue = isSearchFocused ? activeEl.value : null;
@@ -395,6 +452,12 @@ async function loadProjects() {
   if (filterCategory) params.set('category', filterCategory);
   const qs = params.toString();
   let list = await api('/api/projects' + (qs ? '?' + qs : ''));
+  _allProjects = list;
+  applySearchFilter();
+}
+
+function applySearchFilter() {
+  let list = _allProjects || [];
   if (searchKeyword) {
     const kw = searchKeyword.toLowerCase();
     list = list.filter(p => (p.name||'').toLowerCase().includes(kw) || (p.street||'').toLowerCase().includes(kw) || (p.address||'').toLowerCase().includes(kw) || (p.contact||'').toLowerCase().includes(kw));
@@ -435,6 +498,7 @@ async function render() {
     else if (curPage === 'projects') { await Promise.all([loadProjects(), loadStreets(), loadGeneratedDocs(), loadCategories()]); c.innerHTML = renderProjects(); }
     else if (curPage === 'templates') { c.innerHTML = await renderTemplates(); initTemplateUpload(); }
     else if (curPage === 'inspectors') { c.innerHTML = await renderInspectors(); }
+    else if (curPage === 'statistics') { c.innerHTML = await renderStatistics(); }
   } catch {
     c.innerHTML = '<div class="empty-state"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg><p>数据加载失败，请检查后端服务是否运行</p><button class="btn btn-primary" style="margin-top:16px" onclick="render()">重试</button></div>';
   }
@@ -677,6 +741,204 @@ async function uploadTemplateFile() {
   }
 }
 
+/* ======================== Statistics ======================== */
+let statsData = null;
+
+async function renderStatistics() {
+  try {
+    const params = filterProjectType ? `?project_type=${filterProjectType}` : '';
+    statsData = await api('/api/statistics' + params);
+  } catch { statsData = null; }
+
+  if (!statsData) return '<div class="empty-state"><p>统计数据加载失败</p></div>';
+
+  const d = statsData;
+  const hazardRectifyPct = d.total_hazards ? Math.round(d.hazard_done / d.total_hazards * 100) : 0;
+  const photoPct = d.total_hazards ? Math.round(d.has_hazard_photo / d.total_hazards * 100) : 0;
+  const projectDonePct = d.total_projects ? Math.round(d.status_done / d.total_projects * 100) : 0;
+
+  const COLORS = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16','#f97316','#14b8a6'];
+
+  function barChart(items, maxVal) {
+    if (!items.length) return '<div style="padding:16px;color:var(--text3);font-size:13px">暂无数据</div>';
+    const m = maxVal || Math.max(...items.map(i => i.count), 1);
+    return items.map((item, i) => {
+      const w = Math.max(Math.round(item.count / m * 100), 2);
+      const c = COLORS[i % COLORS.length];
+      return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <span style="width:90px;font-size:12px;font-weight:600;color:var(--text2);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.name)}">${esc(item.name)}</span>
+        <div style="flex:1;height:24px;background:var(--border-light);border-radius:6px;overflow:hidden;position:relative">
+          <div style="height:100%;width:${w}%;background:${c};border-radius:6px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px">
+            ${w > 15 ? `<span style="font-size:11px;font-weight:700;color:#fff">${item.count}</span>` : ''}
+          </div>
+        </div>
+        ${w <= 15 ? `<span style="font-size:12px;font-weight:700;color:var(--text2);width:36px">${item.count}</span>` : '<span style="width:36px"></span>'}
+      </div>`;
+    }).join('');
+  }
+
+  function miniDonut(values, colors, size) {
+    size = size || 100;
+    const total = values.reduce((a, b) => a + b, 0);
+    if (!total) return `<svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${size/2-4}" fill="none" stroke="var(--border)" stroke-width="8"/></svg>`;
+    const r = size / 2 - 8;
+    const circ = 2 * Math.PI * r;
+    let offset = 0;
+    let arcs = '';
+    values.forEach((v, i) => {
+      const pct = v / total;
+      const dash = circ * pct;
+      arcs += `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${colors[i]}" stroke-width="12" stroke-dasharray="${dash} ${circ - dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="round"/>`;
+      offset += dash;
+    });
+    return `<svg width="${size}" height="${size}">${arcs}</svg>`;
+  }
+
+  const streetTableRows = d.by_street.map(s => {
+    const allTypes = d.by_hazard_type.map(t => t.name);
+    const typeCells = allTypes.slice(0, 5).map(t => {
+      const found = s.types.find(x => x.name === t);
+      return `<td style="text-align:center;font-weight:500">${found ? found.count : 0}</td>`;
+    }).join('');
+    return `<tr>
+      <td style="font-weight:600">${esc(s.name)}</td>
+      <td style="text-align:center;font-weight:700;color:var(--primary)">${s.hazard_count}</td>
+      ${typeCells}
+      <td style="text-align:center">${s.project_count}</td>
+      <td style="text-align:center"><span style="color:${s.project_done===s.project_count?'var(--success)':'var(--text3)'};font-weight:600">${s.project_done||0}/${s.project_count}</span></td>
+    </tr>`;
+  }).join('');
+
+  const catTableRows = d.by_category.map(c => {
+    const allTypes = d.by_hazard_type.map(t => t.name);
+    const typeCells = allTypes.slice(0, 5).map(t => {
+      const found = c.types.find(x => x.name === t);
+      return `<td style="text-align:center;font-weight:500">${found ? found.count : 0}</td>`;
+    }).join('');
+    return `<tr>
+      <td style="font-weight:600">${esc(c.name)}</td>
+      <td style="text-align:center;font-weight:700;color:var(--primary)">${c.hazard_count}</td>
+      ${typeCells}
+      <td style="text-align:center">${c.project_count}</td>
+    </tr>`;
+  }).join('');
+
+  const allTypeNames = d.by_hazard_type.map(t => t.name);
+  const typeHeaders = allTypeNames.slice(0, 5).map(t => `<th style="text-align:center">${esc(t)}</th>`).join('');
+
+  return `<div class="page-header"><h2>数据统计</h2><p>安全隐患检查数据汇总分析 — ${filterProjectType === 'wenti' ? '文体项目' : filterProjectType === 'lvye' ? '旅业项目' : filterProjectType === 'longhua' ? '龙华项目' : '全部项目'}</p></div>
+
+    <!-- 核心指标 -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px">
+      <div class="stat-card blue animate-in" style="padding:18px"><div class="stat-label">项目总数</div><div class="stat-num">${d.total_projects}</div><div class="stat-sub">完成率 ${projectDonePct}%</div></div>
+      <div class="stat-card green animate-in" style="animation-delay:.05s;padding:18px"><div class="stat-label">已完成</div><div class="stat-num">${d.status_done}</div><div class="stat-sub">项目</div></div>
+      <div class="stat-card amber animate-in" style="animation-delay:.1s;padding:18px"><div class="stat-label">进行中</div><div class="stat-num">${d.status_progress}</div><div class="stat-sub">项目</div></div>
+      <div class="stat-card rose animate-in" style="animation-delay:.15s;padding:18px"><div class="stat-label">待处理</div><div class="stat-num">${d.status_pending}</div><div class="stat-sub">项目</div></div>
+      <div class="stat-card blue animate-in" style="animation-delay:.2s;padding:18px;background:linear-gradient(135deg,#faf5ff,#ede9fe);color:#5b21b6"><div class="stat-label">隐患总数</div><div class="stat-num">${d.total_hazards}</div><div class="stat-sub">整改 ${hazardRectifyPct}%</div></div>
+      <div class="stat-card green animate-in" style="animation-delay:.25s;padding:18px;background:linear-gradient(135deg,#fff7ed,#ffedd5);color:#c2410c"><div class="stat-label">已生成文档</div><div class="stat-num">${d.total_docs}</div><div class="stat-sub">份</div></div>
+    </div>
+
+    <!-- 第二行：隐患类型分布 + 项目/隐患状态饼图 -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px">隐患类型分布</h3>
+        ${barChart(d.by_hazard_type)}
+      </div>
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px">状态概览</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
+          <div style="text-align:center">
+            <div style="position:relative;width:110px;height:110px;margin:0 auto 10px">
+              ${miniDonut([d.status_done, d.status_progress, d.status_pending], ['#10b981','#6366f1','#f59e0b'], 110)}
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column">
+                <span style="font-size:22px;font-weight:800;color:var(--text)">${d.total_projects}</span>
+                <span style="font-size:10px;color:var(--text3)">项目</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin-right:6px"></span>已完成 ${d.status_done}</span>
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#6366f1;margin-right:6px"></span>进行中 ${d.status_progress}</span>
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;margin-right:6px"></span>待处理 ${d.status_pending}</span>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="position:relative;width:110px;height:110px;margin:0 auto 10px">
+              ${miniDonut([d.hazard_done, d.hazard_pending], ['#10b981','#ef4444'], 110)}
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column">
+                <span style="font-size:22px;font-weight:800;color:var(--text)">${d.total_hazards}</span>
+                <span style="font-size:10px;color:var(--text3)">隐患</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin-right:6px"></span>已整改 ${d.hazard_done}</span>
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;margin-right:6px"></span>待整改 ${d.hazard_pending}</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light)">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+            <div><div style="font-size:20px;font-weight:800;color:var(--primary)">${d.has_hazard_photo}</div><div style="font-size:11px;color:var(--text3)">隐患照片</div></div>
+            <div><div style="font-size:20px;font-weight:800;color:var(--success)">${d.has_rectify_photo}</div><div style="font-size:11px;color:var(--text3)">整改照片</div></div>
+            <div><div style="font-size:20px;font-weight:800;color:#f59e0b">${d.total_scene_photos}</div><div style="font-size:11px;color:var(--text3)">现场照片</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 按街道统计表 -->
+    <div class="card" style="padding:24px;margin-bottom:24px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">各街道隐患统计</h3>
+      ${d.by_street.length ? `<div style="overflow-x:auto"><table><thead><tr>
+        <th>街道</th><th style="text-align:center">隐患总数</th>
+        ${typeHeaders}
+        <th style="text-align:center">项目数</th><th style="text-align:center">完成进度</th>
+      </tr></thead><tbody>${streetTableRows}
+        <tr style="font-weight:700;background:var(--border-light)">
+          <td>合计</td>
+          <td style="text-align:center;color:var(--primary)">${d.total_hazards}</td>
+          ${allTypeNames.slice(0,5).map(t => {
+            const item = d.by_hazard_type.find(x => x.name === t);
+            return `<td style="text-align:center">${item ? item.count : 0}</td>`;
+          }).join('')}
+          <td style="text-align:center">${d.total_projects}</td>
+          <td style="text-align:center"><span style="color:var(--success);font-weight:600">${d.status_done}/${d.total_projects}</span></td>
+        </tr>
+      </tbody></table></div>` : '<div style="padding:16px;color:var(--text3);font-size:13px">暂无数据</div>'}
+    </div>
+
+    <!-- 按场所类型统计表 -->
+    <div class="card" style="padding:24px;margin-bottom:24px">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">各场所类型隐患统计</h3>
+      ${d.by_category.length ? `<div style="overflow-x:auto"><table><thead><tr>
+        <th>场所类型</th><th style="text-align:center">隐患总数</th>
+        ${typeHeaders}
+        <th style="text-align:center">项目数</th>
+      </tr></thead><tbody>${catTableRows}
+        <tr style="font-weight:700;background:var(--border-light)">
+          <td>合计</td>
+          <td style="text-align:center;color:var(--primary)">${d.total_hazards}</td>
+          ${allTypeNames.slice(0,5).map(t => {
+            const item = d.by_hazard_type.find(x => x.name === t);
+            return `<td style="text-align:center">${item ? item.count : 0}</td>`;
+          }).join('')}
+          <td style="text-align:center">${d.total_projects}</td>
+        </tr>
+      </tbody></table></div>` : '<div style="padding:16px;color:var(--text3);font-size:13px">暂无数据</div>'}
+    </div>
+
+    <!-- 各街道隐患柱状图 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px">各街道隐患数量</h3>
+        ${barChart(d.by_street.map(s => ({name: s.name, count: s.hazard_count})))}
+      </div>
+      <div class="card" style="padding:24px">
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:18px">各场所类型隐患数量</h3>
+        ${barChart(d.by_category.map(c => ({name: c.name, count: c.hazard_count})))}
+      </div>
+    </div>`;
+}
+
 /* ======================== Inspectors ======================== */
 const GROUP_META = {
   A: { label: '1组', streets: '观澜、观湖、福城' },
@@ -805,14 +1067,14 @@ function renderDashboard() {
         const hasDoc = generatedDocs.some(d => d.project_id === p.id);
         return `<tr>
           <td style="font-weight:600">${esc(p.name)}</td>
-          <td><span style="font-size:11px;font-weight:500;padding:2px 6px;border-radius:4px;${p.project_type==='wenti'?'background:#faf5ff;color:#7c3aed':'background:#ecfdf5;color:#059669'}">${p.project_type==='wenti'?'文体':'龙华'}</span></td>
+          <td><span style="font-size:11px;font-weight:500;padding:2px 6px;border-radius:4px;${p.project_type==='wenti'?'background:#faf5ff;color:#7c3aed':p.project_type==='lvye'?'background:#fff7ed;color:#ea580c':'background:#ecfdf5;color:#059669'}">${p.project_type==='wenti'?'文体':p.project_type==='lvye'?'旅业':'龙华'}</span></td>
           <td style="color:var(--text2)">${esc(p.street)}</td>
           <td>${statusBadge(p.status)}</td>
           <td style="color:var(--text2)">${p.hazard_count || 0}</td>
           <td><div style="display:flex;align-items:center;gap:10px"><div class="progress" style="width:80px"><div class="progress-fill" style="width:${pc}%"></div></div><span style="font-size:12px;color:var(--text3);font-weight:600">${p.uploaded_count||0}/${p.hazard_count||0}</span></div></td>
           <td><div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="btn btn-ghost" onclick="showDetail(${p.id})">详情</button>
-            ${p.status==='done' ? `<button class="btn btn-success" style="padding:4px 10px;font-size:12px" id="dashGenBtn${p.id}" onclick="generateDoc(${p.id})">生成文档</button>` : ''}
+            <button class="btn ${p.status==='done'?'btn-success':'btn-outline'}" style="padding:4px 10px;font-size:12px" id="dashGenBtn${p.id}" onclick="generateDoc(${p.id})" title="${p.status==='done'?'生成文档':'项目尚未完成，可生成当前进度的草稿文档'}">生成文档</button>
             ${hasDoc ? `<button class="btn btn-outline" style="padding:4px 10px;font-size:12px;color:var(--primary);border-color:var(--primary)" onclick="downloadDoc(${p.id})">下载</button>` : ''}
           </div></td>
         </tr>`;
@@ -824,16 +1086,17 @@ function renderDashboard() {
 /* ======================== Upload ======================== */
 function renderUpload() {
   const upt = filterProjectType || 'longhua';
-  const uptLabel = upt === 'longhua' ? '龙华项目' : '文体项目';
-  const uptDesc = upt === 'longhua' ? '龙华：按街道分组的隐患问题清单，含隐患明细和嵌入照片' : '文体：场所列表台账（扁平表格），隐患通过小程序从模板库选取';
+  const uptLabels = { longhua: '龙华项目', wenti: '文体项目', lvye: '旅业项目' };
+  const uptDescs = { longhua: '龙华：按街道分组的隐患问题清单，含隐患明细和嵌入照片', wenti: '文体：场所列表台账（扁平表格），隐患通过小程序从模板库选取', lvye: '旅业（C包）：旅馆酒店安全隐患排查台账，含隐患明细和整改建议' };
+  const uptStyles = { longhua: 'background:#ecfdf5;color:#059669', wenti: 'background:#faf5ff;color:#7c3aed', lvye: 'background:#fff7ed;color:#ea580c' };
   return `<div class="page-header"><h2>上传隐患清单</h2><p>上传 Excel 格式的隐患问题清单，系统将自动解析项目信息和隐患数据</p></div>
     <div class="card" style="padding:32px">
       <div style="margin-bottom:20px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
           <label style="font-size:14px;font-weight:600;color:var(--text)">当前类型</label>
-          <span style="font-size:13px;font-weight:600;padding:4px 12px;border-radius:6px;${upt==='longhua'?'background:#ecfdf5;color:#059669':'background:#faf5ff;color:#7c3aed'}">${uptLabel}</span>
+          <span style="font-size:13px;font-weight:600;padding:4px 12px;border-radius:6px;${uptStyles[upt]||uptStyles.longhua}">${uptLabels[upt]||uptLabels.longhua}</span>
         </div>
-        <p style="font-size:12px;color:var(--text3)">${uptDesc}</p>
+        <p style="font-size:12px;color:var(--text3)">${uptDescs[upt]||uptDescs.longhua}</p>
       </div>
       <div class="upload-zone" id="uploadZone">
         <div class="upload-icon">${SVG.upload}</div>
@@ -930,7 +1193,8 @@ function showUploadResult(result, filename) {
 /* ======================== Projects ======================== */
 function renderProjects() {
   const all = projects;
-  const streetOpts = streets.length ? streets.map(s => `<option value="${esc(s)}" ${filterStreet===s?'selected':''}>${esc(s)}</option>`).join('') : '';
+  const displayStreets = filterProjectType === 'longhua' ? LH_STREETS : streets;
+  const streetOpts = displayStreets.length ? displayStreets.map(s => `<option value="${esc(s)}" ${filterStreet===s?'selected':''}>${esc(s)}</option>`).join('') : '';
 
   // 按来源文件统计
   const sfMap = {};
@@ -942,13 +1206,6 @@ function renderProjects() {
     if (p.status === 'done') sfMap[k].done++;
   });
   const sfKeys = Object.keys(sfMap);
-
-  const filtered = filterSourceFile ? all.filter(p => (p.source_file || '未分类') === filterSourceFile) : all;
-  const totalItems = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-  if (projectPage > totalPages) projectPage = totalPages;
-  const pageStart = (projectPage - 1) * PAGE_SIZE;
-  const displayed = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
   const sidebarHtml = sfKeys.length ? sfKeys.map(k => {
     const s = sfMap[k];
@@ -983,9 +1240,13 @@ function renderProjects() {
           <option value="progress" ${filterStatus==='progress'?'selected':''}>进行中</option>
           <option value="pending" ${filterStatus==='pending'?'selected':''}>待处理</option>
         </select>
-        <select class="btn btn-outline" onchange="filterCategory=this.value;projectPage=1;render()">
+        ${filterProjectType==='wenti' || filterProjectType==='lvye' ? `<select class="btn btn-outline" onchange="filterCategory=this.value;projectPage=1;render()">
           <option value="">全部类型</option>${categories.map(c => `<option value="${esc(c)}" ${filterCategory===c?'selected':''}>${esc(c)}</option>`).join('')}
-        </select>
+        </select>` : ''}
+        ${filterProjectType==='longhua' ? `<button class="btn btn-primary" onclick="showCreateLonghua()" style="margin-right:4px">
+          <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          新建项目
+        </button>` : ''}
         <button class="btn btn-danger" onclick="batchDeleteProjects()" style="margin-right:4px">
           <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           删除选中
@@ -1008,12 +1269,24 @@ function renderProjects() {
         </div>
         <div style="max-height:calc(100vh - 300px);overflow-y:auto">${sidebarHtml}</div>
       </div>
-      <div style="flex:1;min-width:0">
-        ${displayed.length ? displayed.map(p => renderProjectCard(p)).join('') : '<div class="card empty-state" style="padding:48px"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><p>暂无项目，请先上传隐患清单</p></div>'}
-        ${totalPages > 1 ? renderPagination(projectPage, totalPages, totalItems) : `<div style="text-align:center;padding:12px 0;font-size:13px;color:var(--text3)">共 ${totalItems} 个项目</div>`}
-        ${renderGeneratedDocs()}
+      <div style="flex:1;min-width:0" data-role="project-list-area">
+        ${renderProjectListInner()}
       </div>
     </div>`;
+}
+
+function renderProjectListInner() {
+  const all = projects;
+  const filtered = filterSourceFile ? all.filter(p => (p.source_file || '未分类') === filterSourceFile) : all;
+  const totalItems = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  if (projectPage > totalPages) projectPage = totalPages;
+  const pageStart = (projectPage - 1) * PAGE_SIZE;
+  const displayed = filtered.slice(pageStart, pageStart + PAGE_SIZE);
+
+  return (displayed.length ? displayed.map(p => renderProjectCard(p)).join('') : '<div class="card empty-state" style="padding:48px"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><p>暂无项目，请先上传隐患清单</p></div>')
+    + (totalPages > 1 ? renderPagination(projectPage, totalPages, totalItems) : `<div style="text-align:center;padding:12px 0;font-size:13px;color:var(--text3)">共 ${totalItems} 个项目</div>`)
+    + renderGeneratedDocs();
 }
 
 async function deleteSourceGroup(sourceFile) {
@@ -1046,7 +1319,7 @@ function renderProjectCard(p) {
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
             <h3 style="font-size:16px;font-weight:700">${esc(p.name)}</h3>
             ${statusBadge(p.status)}
-            <span style="font-size:12px;font-weight:500;padding:2px 8px;border-radius:6px;${p.project_type==='wenti'?'background:#faf5ff;color:#7c3aed':'background:#ecfdf5;color:#059669'}">${p.project_type==='wenti'?'文体':'龙华'}</span>
+            <span style="font-size:12px;font-weight:500;padding:2px 8px;border-radius:6px;${p.project_type==='wenti'?'background:#faf5ff;color:#7c3aed':p.project_type==='lvye'?'background:#fff7ed;color:#ea580c':'background:#ecfdf5;color:#059669'}">${p.project_type==='wenti'?'文体':p.project_type==='lvye'?'旅业':'龙华'}</span>
             ${p.category ? `<span style="font-size:12px;color:var(--text3);font-weight:500;background:var(--border-light);padding:2px 8px;border-radius:6px">${esc(p.category)}</span>` : ''}
             ${p.report_code ? `<span style="font-size:11px;color:var(--text3);font-weight:500">${esc(p.report_code)}</span>` : ''}
           </div>
@@ -1066,8 +1339,8 @@ function renderProjectCard(p) {
       </div>
       <div style="display:flex;gap:8px;margin-left:16px">
         <button class="btn btn-outline" onclick="showDetail(${p.id})">详情</button>
-        ${p.status==='done' ? `<button class="btn btn-success" id="genBtn${p.id}" onclick="generateDoc(${p.id})">
-          <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>生成文档</button>` : ''}
+        <button class="btn ${p.status==='done'?'btn-success':'btn-outline'}" id="genBtn${p.id}" onclick="generateDoc(${p.id})" title="${p.status==='done'?'生成文档':'项目尚未完成，可生成当前进度的草稿文档'}">
+          <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>生成文档</button>
         ${generatedDocs.some(d => d.project_id === p.id) ? `<button class="btn btn-outline" onclick="downloadDoc(${p.id})" style="color:var(--primary);border-color:var(--primary)">
           <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>下载</button>` : ''}
       </div>
@@ -1165,7 +1438,7 @@ function renderDetailModal(p) {
         </div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px">
-        ${renderInfoCell('项目类型', p.project_type === 'wenti' ? '文体项目' : '龙华项目')}
+        ${renderInfoCell('项目类型', p.project_type === 'wenti' ? '文体项目' : p.project_type === 'lvye' ? '旅业项目' : '龙华项目')}
         ${renderInfoCell('负责人', p.contact)}
         ${renderInfoCell('电话', p.phone)}
         ${renderInfoCell('检查日期', p.check_date)}
@@ -1181,12 +1454,12 @@ function renderDetailModal(p) {
         <div class="tab" onclick="swTab(this,'ph-${p.id}')">现场照片</div>
       </div>
       <div id="hz-${p.id}">
-        ${hc ? `<table><thead><tr><th style="width:40px">序号</th><th>类型</th><th>隐患描述</th>${p.project_type==='wenti'?'<th>整改建议</th>':'<th>风险</th><th>类别</th>'}<th>隐患照片</th><th>状态</th></tr></thead><tbody>
+        ${hc ? `<table><thead><tr><th style="width:40px">序号</th><th>类型</th><th>隐患描述</th>${(p.project_type==='wenti'||p.project_type==='lvye')?'<th>整改建议</th>':'<th>风险</th><th>类别</th>'}<th>隐患照片</th><th>状态</th></tr></thead><tbody>
         ${hazards.map((h, i) => `<tr>
           <td style="font-weight:600">${h.seq || i+1}</td>
           <td>${esc(h.hazard_type || h.type || '')}</td>
           <td style="max-width:200px">${esc(h.description || '')}</td>
-          ${p.project_type==='wenti' ? `<td style="max-width:180px">${esc(h.suggestion || '')}</td>` : `<td style="color:var(--danger);font-weight:500">${esc(h.risk || '')}</td>
+          ${(p.project_type==='wenti'||p.project_type==='lvye') ? `<td style="max-width:180px">${esc(h.suggestion || '')}</td>` : `<td style="color:var(--danger);font-weight:500">${esc(h.risk || '')}</td>
           <td><span class="badge ${h.category==='重大隐患'?'badge-pending':'badge-progress'}">${esc(h.category || '')}</span></td>`}
           <td>${renderHazardPhotoCell(p.id, h)}</td>
           <td><span class="badge badge-${h.rectify_status==='done'?'done':'pending'}">${h.rectify_status==='done'?'已整改':'待整改'}</span></td>
@@ -1194,12 +1467,12 @@ function renderDetailModal(p) {
         </tbody></table>` : '<div class="empty-state"><p>暂无隐患记录</p></div>'}
       </div>
       <div id="ph-${p.id}" style="display:none">
-        <h4 style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">${p.project_type==='wenti' ? '场所照片 / 营业执照 / 经营许可证' : '企业门面 / 廉政监督卡'}</h4>
+        <h4 style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">${(p.project_type==='wenti'||p.project_type==='lvye') ? '场所照片 / 营业执照 / 经营许可证' : '企业门面 / 廉政监督卡'}</h4>
         <div class="photo-grid" style="margin-bottom:24px">
           ${(p.scene_photos||[]).some(s=>s.photo_type==='facade')
-            ? `<div class="photo-item"><img src="${prefixUrl('/api/projects/'+p.id+'/scene-photo?photo_type=facade&_t='+Date.now())}" onerror="this.parentElement.innerHTML='<div class=\\'inner\\' style=\\'background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#4338ca\\'>加载失败</div>'" alt="门面照片"><div class="photo-label">${p.project_type==='wenti'?'场所照片':'企业门面'}</div></div>`
-            : `<div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#94a3b8">待拍摄</div><div class="photo-label">${p.project_type==='wenti'?'场所照片':'企业门面'}</div></div>`}
-          ${p.project_type==='wenti' ? `
+            ? `<div class="photo-item"><img src="${prefixUrl('/api/projects/'+p.id+'/scene-photo?photo_type=facade&_t='+Date.now())}" onerror="this.parentElement.innerHTML='<div class=\\'inner\\' style=\\'background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#4338ca\\'>加载失败</div>'" alt="门面照片"><div class="photo-label">${(p.project_type==='wenti'||p.project_type==='lvye')?'场所照片':'企业门面'}</div></div>`
+            : `<div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#94a3b8">待拍摄</div><div class="photo-label">${(p.project_type==='wenti'||p.project_type==='lvye')?'场所照片':'企业门面'}</div></div>`}
+          ${(p.project_type==='wenti'||p.project_type==='lvye') ? `
           ${(p.scene_photos||[]).some(s=>s.photo_type==='license')
             ? `<div class="photo-item"><img src="${prefixUrl('/api/projects/'+p.id+'/scene-photo?photo_type=license&_t='+Date.now())}" onerror="this.style.display='none'" alt="营业执照"><div class="photo-label">营业执照</div></div>`
             : '<div class="photo-item"><div class="inner" style="background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#94a3b8">待拍摄</div><div class="photo-label">营业执照</div></div>'}
@@ -1253,16 +1526,92 @@ function closeModal() {
   document.getElementById('projectModal').style.display = 'none';
 }
 
+/* ======================== Create Longhua Project ======================== */
+const LH_STREETS = ['观澜街道','观湖街道','福城街道','民治街道','龙华街道','大浪街道'];
+
+function showCreateLonghua() {
+  const streetOpts = LH_STREETS.map(s => `<option value="${s}">${s}</option>`).join('');
+  document.getElementById('projectModalContent').innerHTML = `
+    <div style="padding:28px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+        <div><h2 style="font-size:20px;font-weight:800;letter-spacing:-.3px">新建龙华项目</h2>
+        <p style="font-size:13px;color:var(--text3);margin-top:4px">手动创建一个龙华隐患挂牌督办项目</p></div>
+        <button onclick="closeModal()" style="width:36px;height:36px;border-radius:10px;border:none;background:var(--border-light);cursor:pointer;display:flex;align-items:center;justify-content:center">${SVG.close}</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="grid-column:1/-1"><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">项目名称 <span style="color:var(--danger)">*</span></label>
+          <input id="lhName" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none" placeholder="如：深圳某某餐饮管理有限公司"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">街道</label>
+          <select id="lhStreet" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"><option value="">请选择</option>${streetOpts}</select></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">地址</label>
+          <input id="lhAddr" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none" placeholder="详细地址"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">负责人</label>
+          <input id="lhContact" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">电话</label>
+          <input id="lhPhone" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">建设单位</label>
+          <input id="lhBuild" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">施工单位</label>
+          <input id="lhConstruct" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">监理单位</label>
+          <input id="lhSupervise" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">检查日期</label>
+          <input id="lhDate" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;outline:none" placeholder="如：2026年4月21日"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:28px">
+        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" id="lhSubmitBtn" onclick="submitCreateLonghua()">创建项目</button>
+      </div>
+    </div>`;
+  document.getElementById('projectModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('lhName').focus(), 100);
+}
+
+async function submitCreateLonghua() {
+  const name = (document.getElementById('lhName').value || '').trim();
+  if (!name) { showToast('请输入项目名称'); return; }
+  const btn = document.getElementById('lhSubmitBtn');
+  btn.disabled = true; btn.textContent = '创建中…';
+  try {
+    await api('/api/projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        project_type: 'longhua',
+        street: document.getElementById('lhStreet').value,
+        address: document.getElementById('lhAddr').value,
+        contact: document.getElementById('lhContact').value,
+        phone: document.getElementById('lhPhone').value,
+        build_unit: document.getElementById('lhBuild').value,
+        construct_unit: document.getElementById('lhConstruct').value,
+        supervise_unit: document.getElementById('lhSupervise').value,
+        check_date: document.getElementById('lhDate').value,
+      }),
+    });
+    closeModal();
+    showToast('项目创建成功');
+    render();
+  } catch (e) {
+    btn.disabled = false; btn.textContent = '创建项目';
+  }
+}
+
 /* ======================== Generate / Download ======================== */
 async function generateDoc(id) {
-  const btn = document.getElementById('genBtn' + id);
+  const btn = document.getElementById('genBtn' + id) || document.getElementById('dashGenBtn' + id);
   if (btn) { btn.disabled = true; btn.innerHTML = '<div class="loading-spinner" style="width:14px;height:14px;border-width:2px"></div> 生成中...'; }
 
   try {
     await api(`/api/projects/${id}/generate`, { method: 'POST' });
     showToast('文档生成成功', 'success');
     await loadGeneratedDocs();
-    render();
+    const container = document.querySelector('[data-role="project-list-area"]');
+    if (container) {
+      container.innerHTML = renderProjectListInner();
+    } else {
+      render();
+    }
   } catch {
     if (btn) { btn.disabled = false; btn.innerHTML = `${SVG.doc} 生成文档`; }
   }

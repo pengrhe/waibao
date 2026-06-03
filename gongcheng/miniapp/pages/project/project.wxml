@@ -171,7 +171,30 @@
           </view>
           <text class="scene-caption">{{isWenti ? '场所照片' : '企业门面'}}</text>
         </view>
-        <block wx:if="{{isWenti}}">
+        <block wx:if="{{isLvye}}">
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="permit">
+            <view class="scene-inner">
+              <image wx:if="{{permitUploaded && permitSrc}}" class="scene-thumb" src="{{permitSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">经营许可证</text>
+          </view>
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="license">
+            <view class="scene-inner scene-inner-portrait">
+              <image wx:if="{{licenseUploaded && licenseSrc}}" class="scene-thumb" src="{{licenseSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">营业执照</text>
+          </view>
+          <view class="scene-slot" bindtap="onOpenCamera" data-type="record_sheet">
+            <view class="scene-inner scene-inner-portrait">
+              <image wx:if="{{recordSheetUploaded && recordSheetSrc}}" class="scene-thumb" src="{{recordSheetSrc}}" mode="aspectFill" />
+              <view wx:else class="scene-add">+</view>
+            </view>
+            <text class="scene-caption">记录表(手写)</text>
+          </view>
+        </block>
+        <block wx:elif="{{isWenti}}">
           <view class="scene-slot" bindtap="onOpenCamera" data-type="license">
             <view class="scene-inner">
               <image wx:if="{{licenseUploaded && licenseSrc}}" class="scene-thumb" src="{{licenseSrc}}" mode="aspectFill" />

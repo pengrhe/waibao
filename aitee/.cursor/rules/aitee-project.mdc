@@ -1,0 +1,37 @@
+---
+description: aitee 项目长期上下文（端口/路径/约束）。所有 aitee 相关任务都自动加载。
+globs:
+  - "aitee/**"
+alwaysApply: false
+---
+
+# aitee 项目（自定义印花 SaaS）
+
+## 端口
+- 8200 backend（FastAPI，`/api/v1`）
+- 8201 frontend（Vue3 H5 demo，**视觉基准**）
+- 8202 admin
+- 8203 b-portals（B 端门户）
+- 8206 miniapp（uniapp，H5 预览端口；目标三端 H5/微信/抖音）
+
+## 关键路径
+- 后端路由：`aitee/backend/app/routers/{c,admin}/`
+- C 端 schema：`aitee/backend/app/schemas/c.py`（订单字段是 `amount_total`，不是 `pay_amount`）
+- miniapp API：`aitee/miniapp/src/api/index.ts`
+- miniapp 平台适配：`aitee/miniapp/src/utils/platform.ts`
+- 设计令牌：`aitee/miniapp/src/styles/variables.scss`
+
+## 启动 / 重启 / 停止
+- `aitee/start-all.bat` / `aitee/stop.bat` / `aitee/status.bat`
+- 单个重启：`aitee/restart.bat <backend|frontend|admin|portal|miniapp>`
+
+## 约束
+1. **重启后端按端口杀 PID**，禁止 `Get-Process python | Stop-Process`（见 `.cursor/rules/kill-process-by-port.mdc`）
+2. **下载走代理** `127.0.0.1:7890`（见 `.cursor/rules/proxy-settings.mdc`）
+3. **miniapp `/static/*` 在 H5 dev 必须靠 `vite.config.ts` 的 `serveStaticInDev` 中间件**，不要删
+4. miniapp 8206 当前**只对齐 H5**；wx/dy 编译降级（`#ifdef MP-WEIXIN/MP-TOUTIAO`）属于下一阶段
+5. 8201 frontend 是视觉基准，**未经允许不要改 frontend**
+6. 后端**没有 /health**，探活用 `/api/v1/home/banners`
+
+## 进展速查
+完整进展见 `aitee/docs/HANDOFF.md`。M2 已完成（C 端全套 API + 订单引擎 + AI + mock 支付 + Admin CRUD + 17 个 miniapp 页面对齐 8201）。下一阶段 M3：小程序兼容降级 + 真支付 + 真 AI 限流。

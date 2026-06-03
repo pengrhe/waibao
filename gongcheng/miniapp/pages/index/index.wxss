@@ -117,6 +117,17 @@
   color: #5b21b6;
 }
 
+.type-option-lvye {
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 2px solid #fed7aa;
+}
+.type-option-lvye .type-option-label {
+  color: #9a3412;
+}
+.type-option-lvye .type-option-desc {
+  color: #9a3412;
+}
+
 .tag-wenti {
   background: #faf5ff;
   color: #7c3aed;
@@ -124,6 +135,15 @@
 
 .tag-wenti::before {
   background: #8b5cf6;
+}
+
+.tag-lvye {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.tag-lvye::before {
+  background: #f97316;
 }
 
 .search-bar {

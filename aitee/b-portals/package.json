@@ -1,0 +1,17 @@
+{
+  "name": "aitee-b-portals",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @aitee/portal",
+    "dev:portal": "npm run dev -w @aitee/portal",
+    "build": "npm run build -w @aitee/portal"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}

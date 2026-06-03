@@ -13,8 +13,8 @@ const path = require('path');
   try {
     const uploadResult = await ci.upload({
       project,
-      version: '2.2.1',
-      desc: '修复新建项目表单输入框样式',
+      version: '2.3.3',
+      desc: '旅业-场所照片改横拍，营业执照改竖拍并与经营许可证换位',
       setting: {
         es6: true,
         es7: true,

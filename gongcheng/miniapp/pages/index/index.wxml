@@ -12,6 +12,10 @@
           <text class="type-option-label">文体项目</text>
           <text class="type-option-desc">文体场所安全隐患排查</text>
         </view>
+        <view class="type-option type-option-lvye" bindtap="onSelectType" data-type="lvye">
+          <text class="type-option-label">旅业项目</text>
+          <text class="type-option-desc">旅业安全隐患排查（C包）</text>
+        </view>
       </view>
     </view>
   </view>
@@ -94,6 +98,7 @@
           <view class="card-head">
             <text class="name">{{p.name}}</text>
             <view wx:if="{{p.project_type==='wenti'}}" class="tag tag-wenti">文体</view>
+            <view wx:if="{{p.project_type==='lvye'}}" class="tag tag-lvye">旅业</view>
             <view class="tag {{p.statusClass}}">{{p.statusText}}</view>
           </view>
           <view class="info">

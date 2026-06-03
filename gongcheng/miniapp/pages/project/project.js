@@ -50,6 +50,7 @@ Page({
     recordSheetUploaded: false,
     allSceneDone: false,
     isWenti: false,
+    isLvye: false,
     editing: false,
     editForm: {},
     inspectorList: [],
@@ -89,7 +90,8 @@ Page({
     try {
       const p = await getProjectDetail(id);
       const bust = Date.now();
-      const isWenti = p.project_type === 'wenti';
+      const isWenti = p.project_type === 'wenti' || p.project_type === 'lvye';
+      const isLvye = p.project_type === 'lvye';
       const facadeUploaded = hasSceneType(p.scene_photos, 'facade');
       const cardUploaded = hasSceneType(p.scene_photos, 'card');
       const licenseUploaded = hasSceneType(p.scene_photos, 'license');
@@ -116,6 +118,7 @@ Page({
         project: p,
         hazards,
         isWenti,
+        isLvye,
         facadeUploaded,
         cardUploaded,
         licenseUploaded,
@@ -185,7 +188,7 @@ Page({
   onOpenCamera(e) {
     const type = e.currentTarget.dataset.type;
     if (!this._projectId || !type) return;
-    const pt = this.data.isWenti ? 'wenti' : 'longhua';
+    const pt = this.data.project?.project_type || (this.data.isWenti ? 'wenti' : 'longhua');
     wx.navigateTo({
       url: `/pages/camera/camera?projectId=${encodeURIComponent(this._projectId)}&type=${encodeURIComponent(type)}&projectType=${pt}`,
     });
@@ -210,7 +213,7 @@ Page({
       phone: p.phone || '',
       category: p.category || '',
     };
-    if (p.project_type === 'wenti') {
+    if (p.project_type === 'wenti' || p.project_type === 'lvye') {
       form.inspectors = p.inspectors || '';
       form.check_date = p.check_date || '';
       form.area = p.area || '';
@@ -221,13 +224,17 @@ Page({
     }
     this.setData({ editing: true, editForm: form });
 
-    if (p.project_type !== 'wenti') {
+    if (p.project_type !== 'wenti' && p.project_type !== 'lvye') {
       this._loadInspectorList(p.street, form.inspectors);
     }
   },
 
   async _loadInspectorList(street, currentInspector) {
     const GROUP_LABEL = { A: '1组', B: '2组' };
+    const STREET_GROUP = {
+      观澜: 'A', 观湖: 'A', 福城: 'A',
+      民治: 'B', 龙华: 'B', 大浪: 'B',
+    };
     try {
       const list = await getInspectors();
       const groups = {};
@@ -244,6 +251,19 @@ Page({
       let idx = -1;
       if (currentInspector) {
         idx = realNames.indexOf(currentInspector);
+      }
+      if (idx === -1 && street) {
+        let matchGroup = '';
+        for (const [k, g] of Object.entries(STREET_GROUP)) {
+          if (street.includes(k)) { matchGroup = g; break; }
+        }
+        if (matchGroup) {
+          const gi = groupKeys.indexOf(matchGroup);
+          if (gi !== -1) {
+            idx = gi;
+            this.setData({ 'editForm.inspectors': realNames[gi] });
+          }
+        }
       }
       this.setData({
         inspectorList: list,

@@ -105,10 +105,11 @@ Page({
 
   onLoad() {
     const saved = wx.getStorageSync('projectType');
-    if (saved === 'longhua' || saved === 'wenti') {
+    const TYPE_LABELS = { longhua: '龙华项目', wenti: '文体项目', lvye: '旅业项目' };
+    if (saved === 'longhua' || saved === 'wenti' || saved === 'lvye') {
       this.setData({
         projectType: saved,
-        projectTypeLabel: saved === 'longhua' ? '龙华项目' : '文体项目',
+        projectTypeLabel: TYPE_LABELS[saved] || saved,
       });
       this.loadProjects();
     } else {
@@ -142,10 +143,11 @@ Page({
   onSelectType(e) {
     const type = e.currentTarget.dataset.type;
     if (!type) return;
+    const TYPE_LABELS = { longhua: '龙华项目', wenti: '文体项目', lvye: '旅业项目' };
     wx.setStorageSync('projectType', type);
     this.setData({
       projectType: type,
-      projectTypeLabel: type === 'longhua' ? '龙华项目' : '文体项目',
+      projectTypeLabel: TYPE_LABELS[type] || type,
       showTypeModal: false,
       activeSource: '',
     });
@@ -153,15 +155,17 @@ Page({
   },
 
   onSwitchType() {
+    const TYPE_ITEMS = ['龙华项目', '文体项目', '旅业项目'];
+    const TYPE_KEYS = ['longhua', 'wenti', 'lvye'];
     wx.showActionSheet({
-      itemList: ['龙华项目', '文体项目'],
+      itemList: TYPE_ITEMS,
       success: (res) => {
-        const type = res.tapIndex === 0 ? 'longhua' : 'wenti';
+        const type = TYPE_KEYS[res.tapIndex];
         if (type === this.data.projectType) return;
         wx.setStorageSync('projectType', type);
         this.setData({
           projectType: type,
-          projectTypeLabel: type === 'longhua' ? '龙华项目' : '文体项目',
+          projectTypeLabel: TYPE_ITEMS[res.tapIndex],
           activeSource: '',
         });
         this.loadProjects();

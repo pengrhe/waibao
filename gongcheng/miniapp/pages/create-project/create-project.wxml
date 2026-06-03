@@ -64,7 +64,7 @@
       </view>
     </view>
 
-    <block wx:if="{{projectType === 'wenti'}}">
+    <block wx:if="{{projectType === 'wenti' || projectType === 'lvye'}}">
       <view class="form-divider"></view>
 
       <view class="form-row">

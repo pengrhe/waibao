@@ -9,6 +9,7 @@ const {
   updateHazard,
   downloadImage,
 } = require('../../utils/api.js');
+const { compressPhoto } = require('../../utils/compress.js');
 
 function riskClassFromText(risk) {
   if (!risk) return '';
@@ -95,7 +96,7 @@ Page({
         : '';
 
       const done = isRectifyDone(hazard);
-      const isWenti = detail.project_type === 'wenti';
+      const isWenti = detail.project_type === 'wenti' || detail.project_type === 'lvye';
       const autoEdit = this._newCreated && !hazard.description;
       this._newCreated = false;
       this.setData({
@@ -312,9 +313,11 @@ Page({
   async doUploadHazardPhoto(tempFilePath) {
     if (!tempFilePath) return;
     const { hazardId } = this.data;
-    wx.showLoading({ title: '上传中…', mask: true });
+    wx.showLoading({ title: '压缩中…', mask: true });
     try {
-      await uploadHazardPhoto(Number(hazardId), tempFilePath);
+      const compressed = await compressPhoto(tempFilePath);
+      wx.showLoading({ title: '上传中…', mask: true });
+      await uploadHazardPhoto(Number(hazardId), compressed);
       wx.showToast({ title: '上传成功', icon: 'success' });
       await this.loadData();
     } catch (err) {

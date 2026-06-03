@@ -143,11 +143,43 @@ def _fix_exif_orientation(image_path: str):
             return image_path, 0, 0
 
 
+def _get_cell_width_cm(cell):
+    """从单元格 XML 属性读取实际宽度（cm），无法获取时返回 None。"""
+    tc = cell._tc
+    tcPr = tc.find(qn('w:tcPr'))
+    if tcPr is not None:
+        tcW = tcPr.find(qn('w:tcW'))
+        if tcW is not None:
+            w_val = tcW.get(qn('w:w'))
+            w_type = tcW.get(qn('w:type'), 'dxa')
+            if w_val and w_type == 'dxa':
+                return int(w_val) / 567.0
+    return None
+
+
+def _set_row_height_auto(row):
+    """将行高规则从 exact 改为 atLeast，允许行高随内容扩展。"""
+    tr = row._tr
+    trPr = tr.find(qn('w:trPr'))
+    if trPr is not None:
+        trHeight = trPr.find(qn('w:trHeight'))
+        if trHeight is not None:
+            trHeight.set(qn('w:hRule'), 'atLeast')
+
+
 def _add_image_to_cell(cell, image_path: str, max_width_cm=6.0, max_height_cm=4.5,
                        force_size=False):
-    """插入图片，保持宽高比适配到 max_width_cm × max_height_cm 范围内。"""
+    """插入图片，保持宽高比适配到 max_width_cm × max_height_cm 范围内。
+    自动读取单元格实际宽度，确保图片不超出单元格边界。"""
     if not image_path or not os.path.exists(image_path):
         return
+
+    cell_w = _get_cell_width_cm(cell)
+    if cell_w is not None and cell_w > 1.0:
+        effective_w = cell_w - 0.3
+        if effective_w < max_width_cm:
+            max_width_cm = effective_w
+
     p = cell.paragraphs[0]
     run = p.add_run()
     try:
@@ -255,6 +287,7 @@ def _fill_detailed_info(doc: Document, project_data: dict):
 def _fill_photos(doc: Document, photos: dict):
     """
     photos dict keys: facade, license, permit, record_sheet
+    插入图片后将行高改为 atLeast，允许行随图片内容扩展，避免图片被裁切。
     """
     table3 = doc.tables[3]
 
@@ -263,12 +296,14 @@ def _fill_photos(doc: Document, photos: dict):
         _clear_cell(table3.rows[1].cells[1])
         _add_image_to_cell(table3.rows[1].cells[1], facade_path,
                            max_width_cm=15.0, max_height_cm=11.25)
+        _set_row_height_auto(table3.rows[1])
 
     license_path = photos.get("license")
     if license_path:
         _clear_cell(table3.rows[3].cells[1])
         _add_image_to_cell(table3.rows[3].cells[1], license_path,
                            max_width_cm=15.0, max_height_cm=11.25)
+        _set_row_height_auto(table3.rows[3])
 
     if len(doc.tables) > 4:
         table4 = doc.tables[4]
@@ -277,6 +312,7 @@ def _fill_photos(doc: Document, photos: dict):
             _clear_cell(table4.rows[1].cells[0])
             _add_image_to_cell(table4.rows[1].cells[0], permit_path,
                                max_width_cm=15.5, max_height_cm=22.0, force_size=False)
+            _set_row_height_auto(table4.rows[1])
 
     record_sheet_path = photos.get("record_sheet")
     if record_sheet_path and len(doc.tables) > 5:
@@ -285,6 +321,7 @@ def _fill_photos(doc: Document, photos: dict):
             _clear_cell(table5.rows[1].cells[0])
             _add_image_to_cell(table5.rows[1].cells[0], record_sheet_path,
                                max_width_cm=15.5, max_height_cm=22.0, force_size=False)
+            _set_row_height_auto(table5.rows[1])
 
 
 def _fill_hazard_table(doc: Document, hazards: list):

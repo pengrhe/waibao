@@ -19,7 +19,13 @@ const DEFAULT_ORG = '区安委办（应急局）';
 const DEFAULT_PROJECT_LINE = '核查验收销号';
 const CROP_RATIO = 4 / 3;
 const PORTRAIT_RATIO = 3 / 5;
-const PORTRAIT_TYPES = ['permit', 'record_sheet'];
+
+function getPortraitTypes(projectType) {
+  if (projectType === 'lvye') {
+    return ['license', 'record_sheet'];
+  }
+  return ['permit', 'record_sheet'];
+}
 
 function pad2(n) {
   return String(n).padStart(2, '0');
@@ -110,7 +116,7 @@ Page({
       return;
     }
 
-    const isW = this._projectType === 'wenti';
+    const isW = this._projectType === 'wenti' || this._projectType === 'lvye';
     let title = TITLE_MAP[type] || '拍照';
     if (isW && type === 'facade') title = '拍摄场所照片';
     wx.setNavigationBarTitle({ title });
@@ -119,7 +125,7 @@ Page({
     this._screenW = sysInfo.windowWidth;
     this._screenH = sysInfo.windowHeight;
 
-    this._isPortrait = isW && PORTRAIT_TYPES.includes(type);
+    this._isPortrait = isW && getPortraitTypes(this._projectType).includes(type);
     const masks = this._calcMasks(this._screenW, this._screenH);
 
     this.setData({
@@ -187,7 +193,7 @@ Page({
   },
 
   _needWatermark() {
-    if (this._projectType === 'wenti') return false;
+    if (this._projectType === 'wenti' || this._projectType === 'lvye') return false;
     return this.data.photoType === 'facade' || this.data.photoType === 'card';
   },
 

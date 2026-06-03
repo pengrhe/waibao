@@ -32,8 +32,9 @@ Page({
   onLoad(options) {
     const type = options.type || wx.getStorageSync('projectType') || 'wenti';
     this.setData({ projectType: type });
+    const TITLE_MAP = { wenti: '新建文体项目', lvye: '新建旅业项目', longhua: '新建龙华项目' };
     wx.setNavigationBarTitle({
-      title: type === 'wenti' ? '新建文体项目' : '新建龙华项目',
+      title: TITLE_MAP[type] || '新建项目',
     });
   },
 

@@ -1,0 +1,60 @@
+// ===== aitee 视觉规范（从 frontend/src/assets/styles/variables.scss 同步）=====
+
+$color-primary: #FF4D4F;
+$color-primary-dark: #E63946;
+$color-primary-light: #FFE4E6;
+
+$color-text-primary: #1F2937;
+$color-text-regular: #374151;
+$color-text-secondary: #6B7280;
+$color-text-placeholder: #9CA3AF;
+$color-text-disabled: #D1D5DB;
+
+$color-bg-page: #F6F7FB;
+$color-bg-card: #FFFFFF;
+$color-bg-tag: #F3F4F6;
+
+$color-success: #22C55E;
+$color-warning: #F59E0B;
+$color-error: #EF4444;
+$color-info: #3B82F6;
+
+$color-border: #E5E7EB;
+$color-divider: #F3F4F6;
+
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-pill: 9999px;
+
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+
+$font-xs: 10px;
+$font-sm: 12px;
+$font-md: 14px;
+$font-lg: 16px;
+$font-xl: 18px;
+$font-2xl: 20px;
+$font-3xl: 24px;
+
+$tabbar-height: 56px;
+$navbar-height: 44px;
+$safe-area-bottom: env(safe-area-inset-bottom);
+
+// aitee 渐变（hero / CTA / 价格等高频复用）
+$grad-warm: linear-gradient(135deg, #ff7a2a 0%, #ff4d6e 100%);
+$grad-warm-bg: linear-gradient(135deg, #ffeadd 0%, #ffe1eb 60%, #f3e8ff 100%);
+$grad-city: radial-gradient(80% 100% at 100% 0%, rgba(255, 217, 230, 0.7) 0%, transparent 60%),
+  radial-gradient(80% 80% at 0% 100%, rgba(255, 222, 198, 0.7) 0%, transparent 60%),
+  linear-gradient(135deg, #fff7ef 0%, #fff0e2 55%, #ffe5ec 100%);

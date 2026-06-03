@@ -174,8 +174,14 @@ function applyWatermark(tempFilePath, options) {
     wx.getImageInfo({
       src: tempFilePath,
       success(info) {
-        const w = info.width;
-        const h = info.height;
+        let w = info.width;
+        let h = info.height;
+        const maxSide = 1920;
+        if (w > maxSide || h > maxSide) {
+          const ratio = maxSide / Math.max(w, h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
         let canvas;
         try {
           canvas = wx.createOffscreenCanvas({ type: '2d', width: w, height: h });

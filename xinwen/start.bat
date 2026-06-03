@@ -1,6 +1,6 @@
 @echo off
 chcp 936 >nul
-title Xinwen News System - Service
+title 新闻项目
 cd /d "%~dp0"
 
 echo ============================================

@@ -1,0 +1,56 @@
+/* aitee miniapp 全局基线（对齐 frontend/src/assets/styles/global.scss）。
+ * 小程序端：注意 :root / cursor / user-select 等 CSS 在 wxss 中被忽略；
+ * 我们这里都是兜底，编译会自动剔除不识别的规则。
+ */
+
+page {
+  background: $color-bg-page;
+  color: $color-text-primary;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: $font-md;
+}
+
+view, text, button, input, textarea, image {
+  box-sizing: border-box;
+}
+
+button {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  line-height: normal;
+  &::after { border: none; }
+}
+
+image { display: block; }
+
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-1 { flex: 1; min-width: 0; }
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+}

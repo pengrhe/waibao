@@ -51,7 +51,7 @@
       <view class="record-actions">
         <view class="btn-sm btn-edit-sm" bindtap="onEditRecord" data-id="{{item.id}}">编辑</view>
         <view class="btn-sm btn-photo-sm" bindtap="onTakePhoto" data-id="{{item.id}}">拍照</view>
-        <view wx:if="{{tabs[activeTab].multi}}" class="btn-sm btn-del-sm" bindtap="onDeleteRecord" data-id="{{item.id}}">删除</view>
+        <view class="btn-sm btn-del-sm" bindtap="onDeleteRecord" data-id="{{item.id}}">删除</view>
       </view>
     </view>
 

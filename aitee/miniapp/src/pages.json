@@ -1,0 +1,59 @@
+{
+  "pages": [
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "aitee", "navigationStyle": "custom" } },
+    { "path": "pages/gallery/index", "style": { "navigationBarTitleText": "印花库", "navigationStyle": "custom" } },
+    { "path": "pages/cart/index", "style": { "navigationBarTitleText": "购物车", "navigationStyle": "custom" } },
+    { "path": "pages/mine/index", "style": { "navigationBarTitleText": "我的", "navigationStyle": "custom" } },
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录" } },
+    { "path": "pages/editor/index", "style": { "navigationBarTitleText": "AI 定制", "navigationStyle": "custom" } },
+    { "path": "pages/ai-create/index", "style": { "navigationBarTitleText": "AI 创作", "navigationStyle": "custom" } },
+    { "path": "pages/city-ip/index", "style": { "navigationBarTitleText": "AI 城市 IP", "navigationStyle": "custom" } },
+    { "path": "pages/product-list/index", "style": { "navigationBarTitleText": "选择 T 恤", "navigationStyle": "custom" } },
+    { "path": "pages/product-detail/index", "style": { "navigationBarTitleText": "商品详情", "navigationStyle": "custom" } },
+    { "path": "pages/checkout/index", "style": { "navigationBarTitleText": "确认订单", "navigationStyle": "custom" } },
+    { "path": "pages/orders/index", "style": { "navigationBarTitleText": "我的订单", "navigationStyle": "custom" } },
+    { "path": "pages/order-detail/index", "style": { "navigationBarTitleText": "订单详情", "navigationStyle": "custom" } },
+    { "path": "pages/addresses/index", "style": { "navigationBarTitleText": "地址管理", "navigationStyle": "custom" } },
+    { "path": "pages/address-edit/index", "style": { "navigationBarTitleText": "编辑地址", "navigationStyle": "custom" } },
+    { "path": "pages/coupons/index", "style": { "navigationBarTitleText": "我的优惠券", "navigationStyle": "custom" } },
+    { "path": "pages/messages/index", "style": { "navigationBarTitleText": "消息中心", "navigationStyle": "custom" } }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "aitee",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f6f7fb"
+  },
+  "tabBar": {
+    "color": "#94a3b8",
+    "selectedColor": "#ff4d6e",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/img/tabbar/home.png",
+        "selectedIconPath": "static/img/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/gallery/index",
+        "text": "印花库",
+        "iconPath": "static/img/tabbar/gallery.png",
+        "selectedIconPath": "static/img/tabbar/gallery-active.png"
+      },
+      {
+        "pagePath": "pages/cart/index",
+        "text": "购物车",
+        "iconPath": "static/img/tabbar/cart.png",
+        "selectedIconPath": "static/img/tabbar/cart-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "static/img/tabbar/mine.png",
+        "selectedIconPath": "static/img/tabbar/mine-active.png"
+      }
+    ]
+  }
+}
